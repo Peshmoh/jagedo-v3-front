@@ -1,0 +1,2076 @@
+{
+  "salesData": [
+    {
+      "id": 1,
+      "req": "Req001",
+      "date": "February 12, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "New"
+    },
+    {
+      "id": 2,
+      "req": "Req002",
+      "date": "February 13, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "Draft"
+    },
+    {
+      "id": 3,
+      "req": "Req003",
+      "date": "February 14, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "Completed"
+    },
+    {
+      "id": 4,
+      "req": "Req004",
+      "date": "February 15, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "Pending"
+    },
+    {
+      "id": 5,
+      "req": "Req005",
+      "date": "February 16, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "Ongoing"
+    },
+    {
+      "id": 6,
+      "req": "Req006",
+      "date": "February 17, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "Evaluation"
+    },
+    {
+      "id": 7,
+      "req": "Req007",
+      "date": "February 18, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "Started"
+    },
+    {
+      "id": 8,
+      "req": "Req008",
+      "date": "February 19, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "Pending Start"
+    },
+    {
+      "id": 9,
+      "req": "Req009",
+      "date": "February 20, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "Awarded"
+    },
+    {
+      "id": 10,
+      "req": "Req0010",
+      "date": "February 21, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "past"
+    },
+    {
+      "id": 11,
+      "req": "Req0011",
+      "date": "February 12, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "New"
+    },
+    {
+      "id": 12,
+      "req": "Req0012",
+      "date": "February 13, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "Draft"
+    },
+    {
+      "id": 13,
+      "req": "Req0013",
+      "date": "February 14, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "Completed"
+    },
+    {
+      "id": 14,
+      "req": "Req0014",
+      "date": "February 15, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "Pending"
+    },
+    {
+      "id": 15,
+      "req": "Req0015",
+      "date": "February 16, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "Ongoing"
+    },
+    {
+      "id": 16,
+      "req": "Req0016",
+      "date": "February 17, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "Evaluation"
+    },
+    {
+      "id": 17,
+      "req": "Req0017",
+      "date": "February 18, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "Started"
+    },
+    {
+      "id": 18,
+      "req": "Req0018",
+      "date": "February 19, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "Pending Start"
+    },
+    {
+      "id": 19,
+      "req": "Req0019",
+      "date": "February 20, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "Awarded"
+    },
+    {
+      "id": 20,
+      "req": "Req0020",
+      "date": "February 21, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "past"
+    },
+    {
+      "id": 21,
+      "req": "Req0021",
+      "date": "February 12, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "New"
+    },
+    {
+      "id": 22,
+      "req": "Req0022",
+      "date": "February 13, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "Draft"
+    },
+    {
+      "id": 23,
+      "req": "Req0023",
+      "date": "February 14, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "Completed"
+    },
+    {
+      "id": 24,
+      "req": "Req0024",
+      "date": "February 15, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "Pending"
+    },
+    {
+      "id": 25,
+      "req": "Req0025",
+      "date": "February 16, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "Ongoing"
+    },
+    {
+      "id": 26,
+      "req": "Req0026",
+      "date": "February 17, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "Evaluation"
+    },
+    {
+      "id": 27,
+      "req": "Req0027",
+      "date": "February 18, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "Started"
+    },
+    {
+      "id": 28,
+      "req": "Req0028",
+      "date": "February 19, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "Pending Start"
+    },
+    {
+      "id": 29,
+      "req": "Req0029",
+      "date": "February 20, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "Awarded"
+    },
+    {
+      "id": 30,
+      "req": "Req0030",
+      "date": "February 21, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "past"
+    },
+    {
+      "id": 31,
+      "req": "Req0031",
+      "date": "February 12, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "New"
+    },
+    {
+      "id": 32,
+      "req": "Req0032",
+      "date": "February 13, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "Draft"
+    },
+    {
+      "id": 33,
+      "req": "Req0033",
+      "date": "February 14, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "Completed"
+    },
+    {
+      "id": 34,
+      "req": "Req0034",
+      "date": "February 15, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "Pending"
+    },
+    {
+      "id": 35,
+      "req": "Req0035",
+      "date": "February 16, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "Ongoing"
+    },
+    {
+      "id": 36,
+      "req": "Req0036",
+      "date": "February 17, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "Evaluation"
+    },
+    {
+      "id": 37,
+      "req": "Req0037",
+      "date": "February 18, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Kisumu",
+      "subCounty": "Nyalenda",
+      "status": "Started"
+    },
+    {
+      "id": 38,
+      "req": "Req0038",
+      "date": "February 19, 2025 0800 hours",
+      "category": "Professional",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Nairobi",
+      "subCounty": "Westlands",
+      "status": "Pending Start"
+    },
+    {
+      "id": 39,
+      "req": "Req0039",
+      "date": "February 20, 2025 0800 hours",
+      "category": "Contractor",
+      "type": "Job",
+      "managedBy": "JaGedo",
+      "county": "Mombasa",
+      "subCounty": "Nyali",
+      "status": "Awarded"
+    },
+    {
+      "id": 40,
+      "req": "Req0040",
+      "date": "February 21, 2025 0800 hours",
+      "category": "Fundi",
+      "type": "Job",
+      "managedBy": "Self",
+      "county": "Kisii",
+      "subCounty": "Bonchari",
+      "status": "past"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "F-1001",
+      "customer": {
+        "name": "Samuel Otieno",
+        "invoiceNumber": "FND-1001",
+        "avatar": "/fundis/samuel-otieno.jpg"
+      },
+      "email": "samuel.otieno@jagedo.co.ke",
+      "created": {
+        "date": "April 12, 2025",
+        "time": "10:20 AM"
+      },
+      "dueDate": {
+        "date": "May 5, 2025",
+        "time": "4:00 PM"
+      },
+      "amount": 12500,
+      "status": "Pending"
+    },
+    {
+      "id": "F-1002",
+      "customer": {
+        "name": "Jane Muthoni",
+        "invoiceNumber": "FND-1002",
+        "avatar": "/fundis/jane-muthoni.jpg"
+      },
+      "email": "jane.muthoni@jagedo.co.ke",
+      "created": {
+        "date": "April 10, 2025",
+        "time": "9:45 AM"
+      },
+      "dueDate": {
+        "date": "April 30, 2025",
+        "time": "3:15 PM"
+      },
+      "amount": 8000,
+      "status": "Paid"
+    },
+    {
+      "id": "F-1003",
+      "customer": {
+        "name": "David Kiptoo",
+        "invoiceNumber": "FND-1003",
+        "avatar": "/fundis/david-kiptoo.jpg"
+      },
+      "email": "david.kiptoo@jagedo.co.ke",
+      "created": {
+        "date": "March 29, 2025",
+        "time": "1:00 PM"
+      },
+      "dueDate": {
+        "date": "April 15, 2025",
+        "time": "2:00 PM"
+      },
+      "amount": 10000,
+      "status": "Paid"
+    },
+    {
+      "id": "F-1004",
+      "customer": {
+        "name": "Lucy Wanjiru",
+        "invoiceNumber": "FND-1004",
+        "avatar": "/fundis/lucy-wanjiru.jpg"
+      },
+      "email": "lucy.wanjiru@jagedo.co.ke",
+      "created": {
+        "date": "May 1, 2025",
+        "time": "11:15 AM"
+      },
+      "dueDate": {
+        "date": "May 20, 2025",
+        "time": "5:00 PM"
+      },
+      "amount": 9800,
+      "status": "Pending"
+    },
+    {
+      "id": "F-1005",
+      "customer": {
+        "name": "Peter Mwangi",
+        "invoiceNumber": "FND-1005",
+        "avatar": "/fundis/peter-mwangi.jpg"
+      },
+      "email": "peter.mwangi@jagedo.co.ke",
+      "created": {
+        "date": "April 5, 2025",
+        "time": "2:30 PM"
+      },
+      "dueDate": {
+        "date": "April 25, 2025",
+        "time": "3:00 PM"
+      },
+      "amount": 11200,
+      "status": "Draft"
+    },
+    {
+      "id": "F-1006",
+      "customer": {
+        "name": "Grace Achieng",
+        "invoiceNumber": "FND-1006",
+        "avatar": "/fundis/grace-achieng.jpg"
+      },
+      "email": "grace.achieng@jagedo.co.ke",
+      "created": {
+        "date": "May 5, 2025",
+        "time": "10:00 AM"
+      },
+      "dueDate": {
+        "date": "May 25, 2025",
+        "time": "3:00 PM"
+      },
+      "amount": 9300,
+      "status": "Pending"
+    },
+    {
+      "id": "F-1007",
+      "customer": {
+        "name": "Brian Ouma",
+        "invoiceNumber": "FND-1007",
+        "avatar": "/fundis/brian-ouma.jpg"
+      },
+      "email": "brian.ouma@jagedo.co.ke",
+      "created": {
+        "date": "April 20, 2025",
+        "time": "9:00 AM"
+      },
+      "dueDate": {
+        "date": "May 10, 2025",
+        "time": "1:30 PM"
+      },
+      "amount": 10500,
+      "status": "Paid"
+    },
+    {
+      "id": "F-1008",
+      "customer": {
+        "name": "Naomi Wekesa",
+        "invoiceNumber": "FND-1008",
+        "avatar": "/fundis/naomi-wekesa.jpg"
+      },
+      "email": "naomi.wekesa@jagedo.co.ke",
+      "created": {
+        "date": "March 15, 2025",
+        "time": "12:45 PM"
+      },
+      "dueDate": {
+        "date": "April 10, 2025",
+        "time": "2:45 PM"
+      },
+      "amount": 8700,
+      "status": "Overdue"
+    },
+    {
+      "id": "F-1009",
+      "customer": {
+        "name": "Kevin Njoroge",
+        "invoiceNumber": "FND-1009",
+        "avatar": "/fundis/kevin-njoroge.jpg"
+      },
+      "email": "kevin.njoroge@jagedo.co.ke",
+      "created": {
+        "date": "May 7, 2025",
+        "time": "4:15 PM"
+      },
+      "dueDate": {
+        "date": "May 30, 2025",
+        "time": "3:30 PM"
+      },
+      "amount": 12000,
+      "status": "Pending"
+    },
+    {
+      "id": "F-1010",
+      "customer": {
+        "name": "Mercy Njoki",
+        "invoiceNumber": "FND-1010",
+        "avatar": "/fundis/mercy-njoki.jpg"
+      },
+      "email": "mercy.njoki@jagedo.co.ke",
+      "created": {
+        "date": "April 18, 2025",
+        "time": "10:30 AM"
+      },
+      "dueDate": {
+        "date": "May 8, 2025",
+        "time": "4:30 PM"
+      },
+      "amount": 8900,
+      "status": "Draft"
+    }
+  ],
+  "products": [
+    {
+      "name": "Bamboo",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID001",
+      "sku": "SKU001",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo.jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42000
+    },
+    {
+      "name": "BambooTwo",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID003",
+      "sku": "SKU002",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo(2).jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42500
+    },
+    {
+      "name": "Bamboo3",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID004",
+      "sku": "SKU003",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42000
+    },
+    {
+      "name": "Bamboo4",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID004",
+      "sku": "SKU004",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo(4).jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42000
+    },
+    {
+      "name": "Bamboo5",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID005",
+      "sku": "SKU005",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo(5).jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42700
+    },
+    {
+      "name": "Gate1",
+      "description": "Durable, strong, long-lasting",
+      "type": "Gate",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID006",
+      "sku": "SKU006",
+      "material": "Steel",
+      "size": "(6 * 4)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Gates/img 1.png"
+      ],
+      "customPrice": 53000
+    },
+    {
+      "name": "Gate2",
+      "description": "Durable, strong, long-lasting",
+      "type": "Gate",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID007",
+      "sku": "SKU007",
+      "material": "Steel",
+      "size": "(6 * 4)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Gates/img 2.png"
+      ],
+      "customPrice": 53700
+    },
+    {
+      "name": "Gate3",
+      "description": "Durable, strong, long-lasting",
+      "type": "Gate",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID008",
+      "sku": "SKU008",
+      "material": "Steel",
+      "size": "(6 * 4)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Gates/img 3.png"
+      ],
+      "customPrice": 53800
+    },
+    {
+      "name": "Gypsum Ceiling",
+      "description": "A cutting-edge ceiling offering a modern and innovative living experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Ceiling",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID009",
+      "sku": "SKU009",
+      "material": "Bricks, Cement",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Gypsum Ceiling/gypsum-ceiling.jpeg"
+      ],
+      "customPrice": 30000
+    },
+    {
+      "name": "Gypsum Ceiling",
+      "description": "A cutting-edge ceiling offering a modern and innovative living experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Ceiling",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID010",
+      "sku": "SKU010",
+      "material": "Bricks, Cement",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Gypsum Ceiling/gypsum-ceiling(2).jpeg"
+      ],
+      "customPrice": 33000
+    },
+    {
+      "name": "Steel door",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Door",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID011",
+      "sku": "SKU011",
+      "material": "Steel",
+      "size": "(1 * 2)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Steel Doors/steel-door.jpeg"
+      ],
+      "customPrice": 18000
+    },
+    {
+      "name": "Steel door 2",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Door",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID012",
+      "sku": "SKU012",
+      "material": "Steel",
+      "size": "(1 * 2)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Steel Doors/steel-door(2).jpeg"
+      ],
+      "customPrice": 19000
+    },
+    {
+      "name": "Steel Window",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Window",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID013",
+      "sku": "SKU013",
+      "material": "Steel",
+      "size": "(1 * 1.5)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Steel Windows/steel-window.jpeg"
+      ],
+      "customPrice": 19000
+    },
+    {
+      "name": "Steel Window 2",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Window",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID014",
+      "sku": "SKU014",
+      "material": "Steel",
+      "size": "(1 * 1.5)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Steel Windows/steel-window(2).jpeg"
+      ],
+      "customPrice": 19000
+    },
+    {
+      "name": "Steel Window 3",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Window",
+      "sellerId": 1,
+      "category": "FUNDI",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID015",
+      "sku": "SKU015",
+      "material": "Steel",
+      "size": "(1 * 1.5)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": true,
+      "images": [
+        "/Fundi/Steel Windows/steel-window(4).jpeg"
+      ],
+      "customPrice": 19000
+    },
+    {
+      "name": "Bamboo",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID001",
+      "sku": "SKU001",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo.jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42000
+    },
+    {
+      "name": "BambooTwo",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID003",
+      "sku": "SKU002",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo(2).jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42500
+    },
+    {
+      "name": "Bamboo3",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID004",
+      "sku": "SKU003",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42000
+    },
+    {
+      "name": "Bamboo4",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID004",
+      "sku": "SKU004",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo(4).jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42000
+    },
+    {
+      "name": "Bamboo5",
+      "description": "Durable, strong, long-lasting",
+      "type": "Bamboo Gate",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID005",
+      "sku": "SKU005",
+      "material": "Bamboo",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Bamboo Gates/bamboo(5).jpeg",
+        "/Fundi/Steel Doors/steel-door(3).jpeg",
+        "/Fundi/Steel Doors/steel-door(4).jpeg"
+      ],
+      "customPrice": 42700
+    },
+    {
+      "name": "Gate1",
+      "description": "Durable, strong, long-lasting",
+      "type": "Gate",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID006",
+      "sku": "SKU006",
+      "material": "Steel",
+      "size": "(6 * 4)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Gates/img 1.png"
+      ],
+      "customPrice": 53000
+    },
+    {
+      "name": "Gate2",
+      "description": "Durable, strong, long-lasting",
+      "type": "Gate",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID007",
+      "sku": "SKU007",
+      "material": "Steel",
+      "size": "(6 * 4)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Gates/img 2.png"
+      ],
+      "customPrice": 53700
+    },
+    {
+      "name": "Gate3",
+      "description": "Durable, strong, long-lasting",
+      "type": "Gate",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID008",
+      "sku": "SKU008",
+      "material": "Steel",
+      "size": "(6 * 4)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Gates/img 3.png"
+      ],
+      "customPrice": 53800
+    },
+    {
+      "name": "Gypsum Ceiling",
+      "description": "A cutting-edge ceiling offering a modern and innovative living experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Ceiling",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID009",
+      "sku": "SKU009",
+      "material": "Bricks, Cement",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Gypsum Ceiling/gypsum-ceiling.jpeg"
+      ],
+      "customPrice": 30000
+    },
+    {
+      "name": "Gypsum Ceiling",
+      "description": "A cutting-edge ceiling offering a modern and innovative living experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Ceiling",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID010",
+      "sku": "SKU010",
+      "material": "Bricks, Cement",
+      "size": "(6 * 4)m",
+      "color": "Brown",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Gypsum Ceiling/gypsum-ceiling(2).jpeg"
+      ],
+      "customPrice": 33000
+    },
+    {
+      "name": "Steel door",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Door",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID011",
+      "sku": "SKU011",
+      "material": "Steel",
+      "size": "(1 * 2)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Steel Doors/steel-door.jpeg"
+      ],
+      "customPrice": 18000
+    },
+    {
+      "name": "Steel door 2",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Door",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID012",
+      "sku": "SKU012",
+      "material": "Steel",
+      "size": "(1 * 2)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Steel Doors/steel-door(2).jpeg"
+      ],
+      "customPrice": 19000
+    },
+    {
+      "name": "Steel Window",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Window",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID013",
+      "sku": "SKU013",
+      "material": "Steel",
+      "size": "(1 * 1.5)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Steel Windows/steel-window.jpeg"
+      ],
+      "customPrice": 19000
+    },
+    {
+      "name": "Steel Window 2",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Window",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID014",
+      "sku": "SKU014",
+      "material": "Steel",
+      "size": "(1 * 1.5)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Steel Windows/steel-window(2).jpeg"
+      ],
+      "customPrice": 19000
+    },
+    {
+      "name": "Steel Window 3",
+      "description": "A cutting-edge steel door offering a modern and innovative feel & experience, featuring a diverse range of options to meet the needs of various customers.",
+      "type": "Window",
+      "sellerId": 1,
+      "category": "HARDWARE",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID015",
+      "sku": "SKU015",
+      "material": "Steel",
+      "size": "(1 * 1.5)m",
+      "color": "Black",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Fundi/Steel Windows/steel-window(4).jpeg"
+      ],
+      "customPrice": 19000
+    },
+    {
+      "name": "Backhoe",
+      "description": "Ideal for structural applications.",
+      "type": "Backhoe",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Earthmoving/Backhoe.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Bulldozer",
+      "description": "Ideal for structural applications.",
+      "type": "Bulldozer",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Earthmoving/Bulldozer.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Trencher",
+      "description": "Ideal for structural applications.",
+      "type": "Trencher",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Earthmoving/Trencher.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "AirCompressor",
+      "description": "Ideal for structural applications.",
+      "type": "AirCompressor",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Power tools/Air compressor.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Drill",
+      "description": "Ideal for structural applications.",
+      "type": "Drill",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Power tools/Drill.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Rotary Hammer",
+      "description": "Ideal for structural applications.",
+      "type": "Rotary Hammer",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Power tools/Rotary Hammer.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Theodolite",
+      "description": "Ideal for structural applications.",
+      "type": "Theodolite",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Surveying Equipments/theodolite.jpeg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Topographic Survey",
+      "description": "Ideal for structural applications.",
+      "type": "Topographic Survey",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Surveying Equipments/topographic survey.jpeg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Tripod",
+      "description": "Ideal for structural applications.",
+      "type": "Tripod",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Surveying Equipments/Tripod.jpeg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Concrete Trucks",
+      "description": "Ideal for structural applications.",
+      "type": "Concrete Trucks",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Trucks and Vehicles/Concrete trucks.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Crane Trucks",
+      "description": "Ideal for structural applications.",
+      "type": "Crane Trucks",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Trucks and Vehicles/Crane trucks.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Fork Lift",
+      "description": "Ideal for structural applications.",
+      "type": "Fork Lift",
+      "sellerId": 1,
+      "category": "MACHINERY",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "IQM0031",
+      "sku": "SKU0031",
+      "material": "Steel",
+      "size": "50 kg",
+      "color": "Grey",
+      "uom": "kg",
+      "custom": false,
+      "images": [
+        "/Machinery & Equipments/Trucks and Vehicles/Fork lift.jpg"
+      ],
+      "customPrice": 3000
+    },
+    {
+      "name": "Flat Roof Apartment",
+      "description": "A cutting-edge apartment complex offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Apartment",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID001",
+      "sku": "SKU001",
+      "material": "Bricks, Cement",
+      "size": "1000m^2",
+      "color": "Color 1",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Designs/Apartments/apartment-1.jpeg",
+        "/Designs/Apartments/apartment-2.jpeg",
+        "/Designs/Apartments/apartment-3.jpeg"
+      ],
+      "customPrice": 2300000
+    },
+    {
+      "name": "Sloped Roof Apartment",
+      "description": "A cutting-edge apartment complex offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Apartment",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID002",
+      "sku": "SKU002",
+      "material": "Bricks, Cement",
+      "size": "1000m^2",
+      "color": "Color 2",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Designs/Apartments/apartment-2.jpeg"
+      ],
+      "customPrice": 2100000
+    },
+    {
+      "name": "Residential Apartment",
+      "description": "A cutting-edge apartment complex offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Apartment",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID003",
+      "sku": "SKU003",
+      "material": "Bricks, Cement",
+      "size": "1000m^2",
+      "color": "Color 3",
+      "uom": "meters",
+      "custom": false,
+      "images": [
+        "/Designs/Apartments/apartment-3.jpeg"
+      ],
+      "customPrice": 1900000
+    },
+    {
+      "name": "Gable Roof Bungalow",
+      "description": "A cutting-edge bungalow offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Bungalow",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID004",
+      "sku": "SKU004",
+      "material": "Bricks, Cement",
+      "size": "5 acres",
+      "color": "Color 4",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Bungalows/bungalow-1.jpeg"
+      ],
+      "customPrice": 1800000
+    },
+    {
+      "name": "Hipped Roof Bungalow",
+      "description": "A cutting-edge bungalow offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Bungalow",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID005",
+      "sku": "SKU005",
+      "material": "Bricks, Cement",
+      "size": "5 acres",
+      "color": "Color 5",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Bungalows/bungalow-2.jpeg"
+      ],
+      "customPrice": 1700000
+    },
+    {
+      "name": "Mansard Roof Bungalow",
+      "description": "A cutting-edge bungalow offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Bungalow",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID006",
+      "sku": "SKU006",
+      "material": "Bricks, Cement",
+      "size": "5 acres",
+      "color": "Color 6",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Bungalows/bungalow-3.jpeg"
+      ],
+      "customPrice": 2600000
+    },
+    {
+      "name": "Business Park",
+      "description": "A cutting-edge commercial offering a modern and innovative working experience, featuring a diverse range of work options and amenities to meet the needs of various tenants.",
+      "type": "Commercial",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID007",
+      "sku": "SKU007",
+      "material": "Bricks, Cement",
+      "size": "30 acres",
+      "color": "Color 7",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Commercials/commercial-1.jpeg"
+      ],
+      "customPrice": 2700000
+    },
+    {
+      "name": "Shopping Mall",
+      "description": "A cutting-edge commercial offering a modern and innovative working experience, featuring a diverse range of work options and amenities to meet the needs of various tenants.",
+      "type": "Commercial",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID008",
+      "sku": "SKU008",
+      "material": "Bricks, Cement",
+      "size": "25 acres",
+      "color": "Color 8",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Commercials/commercial-3.jpeg"
+      ],
+      "customPrice": 2800000
+    },
+    {
+      "name": "Office Building",
+      "description": "A cutting-edge commercial offering a modern and innovative working experience, featuring a diverse range of work options and amenities to meet the needs of various tenants.",
+      "type": "Commercial",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID009",
+      "sku": "SKU009",
+      "material": "Bricks, Cement",
+      "size": "23.3 acres",
+      "color": "Color 9",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Commercials/commercial-2.jpeg"
+      ],
+      "customPrice": 1500000
+    },
+    {
+      "name": "Mansionette",
+      "description": "A cutting-edge mansionette offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Mansionette",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID010",
+      "sku": "SKU010",
+      "material": "Bricks, Cement, Plywood",
+      "size": "12 acres",
+      "color": "Color 10",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Mansionettes/mansionette-1.jpeg"
+      ],
+      "customPrice": 1000000
+    },
+    {
+      "name": "Mansionette 2",
+      "description": "A cutting-edge mansionette offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Mansionette",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID011",
+      "sku": "SKU011",
+      "material": "Bricks, Cement, Plywood",
+      "size": "10 acres",
+      "color": "Color 11",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Mansionettes/mansionette-2.jpeg"
+      ],
+      "customPrice": 1100000
+    },
+    {
+      "name": "Mansionette 3",
+      "description": "A cutting-edge mansionette offering a modern and innovative living experience, featuring a diverse range of residential options and amenities to meet the needs of various tenants.",
+      "type": "Mansionette",
+      "sellerId": 1,
+      "category": "PROFESSIONAL",
+      "regionId": 1,
+      "lastUpdated": "2025-07-25T13:33:07.336Z",
+      "bId": "BID012",
+      "sku": "SKU012",
+      "material": "Bricks, Cement, Plywood",
+      "size": "9 acres",
+      "color": "Color 12",
+      "uom": "acres",
+      "custom": false,
+      "images": [
+        "/Designs/Mansionettes/mansionette-3.jpeg"
+      ],
+      "customPrice": 1200000
+    }
+  ],
+  "receipts": [
+    {
+      "id": "1",
+      "reqNo": "H001",
+      "createdDate": "2025-06-07",
+      "createdTime": "11:30 AM",
+      "dueDate": "2025-06-17",
+      "dueTime": "4:00 PM",
+      "status": "Paid",
+      "amount": 2500.00,
+      "issuer": {
+        "name": "Paul",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "Lenox Randy",
+        "email": "lenoxrandy@gmail.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2300.00,
+        "taxRate": 0.087,
+        "taxAmount": 200.00,
+        "totalPaid": 2500.00
+      },
+      "notes": "Thank you for your payment.",
+      "downloadUrl": "/receipts/H001.pdf"
+    },
+    {
+      "id": "2",
+      "reqNo": "P001",
+      "createdDate": "2025-06-05",
+      "createdTime": "09:00 AM",
+      "dueDate": "2025-06-15",
+      "dueTime": "1:00 PM",
+      "status": "Paid",
+      "amount": 2500.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "Grace Wanjiku",
+        "email": "grace.wanjiku@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2300.00,
+        "taxRate": 0.087,
+        "taxAmount": 200.00,
+        "totalPaid": 2500.00
+      },
+      "notes": "Invoice paid successfully.",
+      "downloadUrl": "/receipts/P001.pdf"
+    },
+    {
+      "id": "3",
+      "reqNo": "C001",
+      "createdDate": "2025-06-03",
+      "createdTime": "12:00 PM",
+      "dueDate": "2025-06-12",
+      "dueTime": "3:00 PM",
+      "status": "Paid",
+      "amount": 2500.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "John Mwangi",
+        "email": "john.mwangi@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2300.00,
+        "taxRate": 0.087,
+        "taxAmount": 200.00,
+        "totalPaid": 2500.00
+      },
+      "notes": "Receipt generated.",
+      "downloadUrl": "/receipts/C001.pdf"
+    },
+    {
+      "id": "4",
+      "reqNo": "F001",
+      "createdDate": "2025-06-01",
+      "createdTime": "10:00 AM",
+      "dueDate": "2025-06-10",
+      "dueTime": "5:00 PM",
+      "status": "Paid",
+      "amount": 2500.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "Sarah Otieno",
+        "email": "sarah.otieno@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2300.00,
+        "taxRate": 0.087,
+        "taxAmount": 200.00,
+        "totalPaid": 2500.00
+      },
+      "notes": "Payment Done.",
+      "downloadUrl": "/receipts/F001.pdf"
+    },
+    {
+      "id": "5",
+      "reqNo": "G002",
+      "createdDate": "2025-06-08",
+      "createdTime": "2:00 PM",
+      "dueDate": "2025-06-18",
+      "dueTime": "6:00 PM",
+      "status": "Paid",
+      "amount": 3000.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "Kevin Otieno",
+        "email": "kevin.otieno@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2750.00,
+        "taxRate": 0.091,
+        "taxAmount": 250.00,
+        "totalPaid": 3000.00
+      },
+      "notes": "Payment Done!",
+      "downloadUrl": "/receipts/G002.pdf"
+    },
+    {
+      "id": "6",
+      "reqNo": "T009",
+      "createdDate": "2025-06-10",
+      "createdTime": "3:15 PM",
+      "dueDate": "2025-06-20",
+      "dueTime": "2:00 PM",
+      "status": "Paid",
+      "amount": 2700.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "Brian Kiprono",
+        "email": "brian.kiprono@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2480.00,
+        "taxRate": 0.089,
+        "taxAmount": 220.00,
+        "totalPaid": 2700.00
+      },
+      "notes": "Fees Payed.",
+      "downloadUrl": "/receipts/T009.pdf"
+    },
+    {
+      "id": "7",
+      "reqNo": "R023",
+      "createdDate": "2025-06-11",
+      "createdTime": "08:45 AM",
+      "dueDate": "2025-06-21",
+      "dueTime": "9:00 AM",
+      "status": "Paid",
+      "amount": 2600.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "Diana Njeri",
+        "email": "diana.njeri@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2380.00,
+        "taxRate": 0.092,
+        "taxAmount": 220.00,
+        "totalPaid": 2600.00
+      },
+      "notes": "Payment Done.",
+      "downloadUrl": "/receipts/R023.pdf"
+    },
+    {
+      "id": "8",
+      "reqNo": "M030",
+      "createdDate": "2025-06-09",
+      "createdTime": "04:30 PM",
+      "dueDate": "2025-06-19",
+      "dueTime": "10:00 AM",
+      "status": "Paid",
+      "amount": 3100.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "Faith Kendi",
+        "email": "faith.kendi@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2800.00,
+        "taxRate": 0.107,
+        "taxAmount": 300.00,
+        "totalPaid": 3100.00
+      },
+      "notes": "Paid",
+      "downloadUrl": "/receipts/M030.pdf"
+    },
+    {
+      "id": "9",
+      "reqNo": "K015",
+      "createdDate": "2025-06-06",
+      "createdTime": "11:00 AM",
+      "dueDate": "2025-06-16",
+      "dueTime": "12:00 PM",
+      "status": "Paid",
+      "amount": 2900.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "James Kariuki",
+        "email": "james.kariuki@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2600.00,
+        "taxRate": 0.115,
+        "taxAmount": 300.00,
+        "totalPaid": 2900.00
+      },
+      "notes": "Equipment subscription.",
+      "downloadUrl": "/receipts/K015.pdf"
+    },
+    {
+      "id": "10",
+      "reqNo": "N101",
+      "createdDate": "2025-06-04",
+      "createdTime": "07:30 AM",
+      "dueDate": "2025-06-14",
+      "dueTime": "8:00 AM",
+      "status": "Paid",
+      "amount": 2800.00,
+      "issuer": {
+        "name": "Mercy Wanjiku",
+        "addressLine1": "123 Wellness Ave",
+        "cityState": "Nairobi, Kenya",
+        "email": "info@jagedo.co.ke"
+      },
+      "customer": {
+        "name": "Agnes Chebet",
+        "email": "agnes.chebet@example.com"
+      },
+      "paymentDetails": {
+        "subtotal": 2550.00,
+        "taxRate": 0.098,
+        "taxAmount": 250.00,
+        "totalPaid": 2800.00
+      },
+      "notes": "Fundi Payment",
+      "downloadUrl": "/receipts/N101.pdf"
+    }
+  ],
+  "jobs": [
+    {
+      "success": true,
+      "message": "Job details fetched successfully.",
+      "data": {
+        "id": 52,
+        "jobId": "JOB-001",
+        "skill": "Complete House Construction",
+        "description": "Construction of a 3-bedroom residential house from foundation to finishing.",
+        "location": "Nairobi, Kenya",
+        "stage": "INPROGRESS",
+        "assignedBid": {
+          "id": 45,
+          "totalAmount": 5000000,
+          "milestones": [
+            {
+              "id": 101,
+              "name": "Bill 1: Foundation & Ground Floor Slab",
+              "percentageDisbursement": 25,
+              "amount": 1250000,
+              "progress": 100,
+              "description": "Completion of all foundation works and casting of the ground floor slab.",
+              "paid": true,
+              "approved": true,
+              "complete": true
+            },
+            {
+              "id": 102,
+              "name": "Bill 2: Structural Walls & First Floor",
+              "percentageDisbursement": 30,
+              "amount": 1500000,
+              "progress": 50,
+              "description": "Erection of ground floor walls, columns, and casting of the first-floor slab.",
+              "paid": false,
+              "approved": false,
+              "complete": false
+            },
+            {
+              "id": 103,
+              "name": "Bill 3: Roofing & Windows",
+              "percentageDisbursement": 25,
+              "amount": 1250000,
+              "progress": 0,
+              "description": "Installation of the roof structure, covering, and all window frames.",
+              "paid": false,
+              "approved": false,
+              "complete": false
+            }
+          ]
+        }
+      },
+      "status": "SUCCESS"
+    }
+  ]
+}

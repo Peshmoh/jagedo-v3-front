@@ -1,0 +1,320 @@
+{
+    "Mombasa": [
+      {
+        "value": "Changamwe",
+        "label": "Changamwe"
+      },
+      {
+        "value": "Jomvu",
+        "label": "Jomvu"
+      },
+      {
+        "value": "Kisauni",
+        "label": "Kisauni"
+      },
+      {
+        "value": "Nyali",
+        "label": "Nyali"
+      },
+      {
+        "value": "Likoni",
+        "label": "Likoni"
+      },
+      {
+        "value": "Mvita",
+        "label": "Mvita"
+      }
+    ],
+    "Kwale": [
+      {
+        "value": "Matuga",
+        "label": "Matuga"
+      },
+      {
+        "value": "Msambweni",
+        "label": "Msambweni"
+      },
+      {
+        "value": "Kinango",
+        "label": "Kinango"
+      },
+      {
+        "value": "Lunga Lunga",
+        "label": "Lunga Lunga"
+      }
+    ],
+    "Kilifi": [
+      {
+        "value": "Kilifi North",
+        "label": "Kilifi North"
+      },
+      {
+        "value": "Kilifi South",
+        "label": "Kilifi South"
+      },
+      {
+        "value": "Kaloleni",
+        "label": "Kaloleni"
+      },
+      {
+        "value": "Rabai",
+        "label": "Rabai"
+      },
+      {
+        "value": "Ganze",
+        "label": "Ganze"
+      },
+      {
+        "value": "Malindi",
+        "label": "Malindi"
+      },
+      {
+        "value": "Magarini",
+        "label": "Magarini"
+      }
+    ],
+    "Tana River": [
+      {
+        "value": "Bura",
+        "label": "Bura"
+      },
+      {
+        "value": "Galole",
+        "label": "Galole"
+      },
+      {
+        "value": "Garsen",
+        "label": "Garsen"
+      }
+    ],
+    "Lamu": [
+      {
+        "value": "Lamu East",
+        "label": "Lamu East"
+      },
+      {
+        "value": "Lamu West",
+        "label": "Lamu West"
+      }
+    ],
+    "Taita Taveta": [
+      {
+        "value": "Voi",
+        "label": "Voi"
+      },
+      {
+        "value": "Wundanyi",
+        "label": "Wundanyi"
+      },
+      {
+        "value": "Mwatate",
+        "label": "Mwatate"
+      },
+      {
+        "value": "Taveta",
+        "label": "Taveta"
+      }
+    ],
+    "Garissa": [
+      {
+        "value": "Garissa Township",
+        "label": "Garissa Township"
+      },
+      {
+        "value": "Balambala",
+        "label": "Balambala"
+      },
+      {
+        "value": "Lagdera",
+        "label": "Lagdera"
+      },
+      {
+        "value": "Dadaab",
+        "label": "Dadaab"
+      },
+      {
+        "value": "Fafi",
+        "label": "Fafi"
+      },
+      {
+        "value": "Ijara",
+        "label": "Ijara"
+      }
+    ],
+    "Wajir": [
+      {
+        "value": "Wajir East",
+        "label": "Wajir East"
+      },
+      {
+        "value": "Wajir West",
+        "label": "Wajir West"
+      },
+      {
+        "value": "Tarbaj",
+        "label": "Tarbaj"
+      },
+      {
+        "value": "Eldas",
+        "label": "Eldas"
+      },
+      {
+        "value": "Wajir North",
+        "label": "Wajir North"
+      },
+      {
+        "value": "Wajir South",
+        "label": "Wajir South"
+      }
+    ],
+    "Mandera": [
+      {
+        "value": "Mandera East",
+        "label": "Mandera East"
+      },
+      {
+        "value": "Mandera West",
+        "label": "Mandera West"
+      },
+      {
+        "value": "Mandera North",
+        "label": "Mandera North"
+      },
+      {
+        "value": "Mandera South",
+        "label": "Mandera South"
+      },
+      {
+        "value": "Banissa",
+        "label": "Banissa"
+      },
+      {
+        "value": "Lafey",
+        "label": "Lafey"
+      }
+    ],
+    "Marsabit": [
+      {
+        "value": "Saku",
+        "label": "Saku"
+      },
+      {
+        "value": "North Horr",
+        "label": "North Horr"
+      },
+      {
+        "value": "Laisamis",
+        "label": "Laisamis"
+      },
+      {
+        "value": "Moyale",
+        "label": "Moyale"
+      }
+    ],
+    "Isiolo": [
+      {
+        "value": "Isiolo North",
+        "label": "Isiolo North"
+      },
+      {
+        "value": "Isiolo South",
+        "label": "Isiolo South"
+      }
+    ],
+    "Meru": [
+      {
+        "value": "Igembe North",
+        "label": "Igembe North"
+      },
+      {
+        "value": "Igembe Central",
+        "label": "Igembe Central"
+      },
+      {
+        "value": "Igembe South",
+        "label": "Igembe South"
+      },
+      {
+        "value": "Tigania East",
+        "label": "Tigania East"
+      },
+      {
+        "value": "Tigania West",
+        "label": "Tigania West"
+      },
+      {
+        "value": "North Imenti",
+        "label": "North Imenti"
+      },
+      {
+        "value": "Central Imenti",
+        "label": "Central Imenti"
+      },
+      {
+        "value": "South Imenti",
+        "label": "South Imenti"
+      }
+    ],
+    "Nairobi": [
+      {
+        "value": "Westlands",
+        "label": "Westlands"
+      },
+      {
+        "value": "Lang'ata",
+        "label": "Lang'ata"
+      },
+      {
+        "value": "Kasarani",
+        "label": "Kasarani"
+      },
+      {
+        "value": "Embakasi East",
+        "label": "Embakasi East"
+      },
+      {
+        "value": "Embakasi West",
+        "label": "Embakasi West"
+      },
+      {
+        "value": "Embakasi Central",
+        "label": "Embakasi Central"
+      },
+      {
+        "value": "Embakasi North",
+        "label": "Embakasi North"
+      },
+      {
+        "value": "Embakasi South",
+        "label": "Embakasi South"
+      },
+      {
+        "value": "Dagoretti North",
+        "label": "Dagoretti North"
+      },
+      {
+        "value": "Dagoretti South",
+        "label": "Dagoretti South"
+      },
+      {
+        "value": "Makadara",
+        "label": "Makadara"
+      },
+      {
+        "value": "Mathare",
+        "label": "Mathare"
+      },
+      {
+        "value": "Ruaraka",
+        "label": "Ruaraka"
+      },
+      {
+        "value": "Starehe",
+        "label": "Starehe"
+      },
+      {
+        "value": "Kamukunji",
+        "label": "Kamukunji"
+      }
+    ]
+  }

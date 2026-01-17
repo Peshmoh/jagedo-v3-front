@@ -1,0 +1,331 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type React from "react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { DatePicker } from "@/components/date-picker";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TiTick } from "react-icons/ti";
+import { AttachmentsSection } from "@/components/Attachments";
+import type { UploadedFile } from "@/utils/fileUpload";
+import { LocationAutocomplete } from "@/components/LocationAutocomplete";
+
+interface ContractorFormProps {
+    formData: any;
+    handleInputChange: (
+        e: React.ChangeEvent<
+            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >
+    ) => void;
+    handleDateChange: (date: Date | null) => void;
+    setSelectedPlan: (plan: string | null) => void;
+    setAcceptedPolicy: (accepted: boolean) => void;
+    handleSubmit: (e: React.FormEvent) => void;
+    isFormValid: () => boolean;
+    isSubmitting: boolean;
+    selectedPlan: string | null;
+    acceptedPolicy: boolean;
+    attachments: UploadedFile[];
+    uploadingFiles: string[];
+    editingFile: string | null;
+    editingFileName: string;
+    handleFileUpload: (uploadedFile: UploadedFile) => void;
+    removeAttachment: (index: number) => void;
+    startEditingFile: (index: number) => void;
+    saveEditingFileName: (index: number) => void;
+    cancelEditingFileName: () => void;
+    setEditingFileName: (name: string) => void;
+}
+
+function getEarliestStartDate(requestTime: Date): Date {
+    const cutoffHour = 8;
+    const earliest = new Date(requestTime);
+
+    if (requestTime.getHours() < cutoffHour) {
+        earliest.setDate(earliest.getDate() + 14);
+    } else {
+        earliest.setDate(earliest.getDate() + 15);
+    }
+
+    earliest.setHours(8, 0, 0, 0);
+    return earliest;
+}
+
+export const ContractorForm: React.FC<ContractorFormProps> = ({
+    formData,
+    handleInputChange,
+    handleDateChange,
+    setSelectedPlan,
+    setAcceptedPolicy,
+    handleSubmit,
+    isFormValid,
+    isSubmitting,
+    selectedPlan,
+    acceptedPolicy,
+    attachments,
+    uploadingFiles,
+    editingFile,
+    editingFileName,
+    handleFileUpload,
+    removeAttachment,
+    startEditingFile,
+    saveEditingFileName,
+    cancelEditingFileName,
+    setEditingFileName
+}) => {
+
+    const now = new Date();
+    const earliest = getEarliestStartDate(now);
+    const contractorTypeOptions = [
+        { value: "building-works", label: "Building Works" },
+        { value: "mechanical-works", label: "Mechanical Works" },
+        { value: "electrical-works", label: "Electrical Works" },
+        { value: "water-works", label: "Water Works" },
+        { value: "road-works", label: "Road and other Civil Works" }
+    ];
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="lg:col-span-2 space-y-6 animate-fade-in-up bg-white">
+                    <Card className="border-none">
+                        <CardContent className="pt-6 bg-white">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-4">
+                                    <div>
+                                        <label
+                                            htmlFor="contractor"
+                                            className="block text-sm font-medium text-gray-700 mb-1"
+                                        >
+                                            Select Contractor Type
+                                        </label>
+                                        <Select
+                                            value={formData.skill}
+                                            onValueChange={(value) =>
+                                                handleInputChange({
+                                                    target: {
+                                                        name: "skill",
+                                                        value
+                                                    }
+                                                } as any)
+                                            }
+                                        >
+                                            <SelectTrigger
+                                                id="contractor"
+                                                className="w-full border-1 border-gray-200"
+                                            >
+                                                <SelectValue placeholder="Select a Contractor Type" />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-white">
+                                                {contractorTypeOptions.map((option) => (
+                                                    <SelectItem key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="location"
+                                            className="block text-sm font-medium text-gray-700 mb-1"
+                                        >
+                                            Location
+                                        </label>
+                                        <LocationAutocomplete
+                                            value={formData.location}
+                                            onChange={(value) =>
+                                                handleInputChange({
+                                                    target: { name: "location", value },
+                                                } as any)
+                                            }
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="startDate"
+                                            className="block text-sm font-medium text-gray-700 mb-1"
+                                        >
+                                            Start Date
+                                        </label>
+                                        <DatePicker
+                                            date={formData.startDate}
+                                            setDate={handleDateChange}
+                                            earliestDate={earliest}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="description"
+                                            className="block text-sm font-medium text-gray-700 mb-1"
+                                        >
+                                            Description
+                                        </label>
+                                        <Textarea
+                                            id="description"
+                                            name="description"
+                                            placeholder="Describe your project requirements..."
+                                            rows={4}
+                                            value={formData.description}
+                                            onChange={handleInputChange}
+                                            className="resize-none border-1 border-gray-200"
+                                        />
+                                    </div>
+                                </div>
+                                <AttachmentsSection
+                                    attachments={attachments}
+                                    uploadingFiles={uploadingFiles}
+                                    editingFile={editingFile}
+                                    editingFileName={editingFileName}
+                                    onFileUpload={handleFileUpload}
+                                    onRemoveAttachment={removeAttachment}
+                                    onStartEditing={startEditingFile}
+                                    onSaveEditing={saveEditingFileName}
+                                    onCancelEditing={cancelEditingFileName}
+                                    onEditingFileNameChange={setEditingFileName}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <section className="p-0 md:p-6">
+                        <h1 className="text-3xl font-semibold text-[rgb(0,0,122)] text-center">
+                            Managed By:
+                        </h1>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <button
+                                type="button"
+                                onClick={() => setSelectedPlan("jagedo")}
+                                className={`cursor-pointer p-6 rounded-2xl shadow-lg transition hover:scale-105 ${selectedPlan?.toLowerCase() == "jagedo"
+                                    ? "bg-[rgb(0,0,122)] text-white"
+                                    : "bg-blue-200 text-gray-800"
+                                    }`}
+                            >
+                                <h2 className="text-4xl font-bold mb-4">
+                                    JaGedo
+                                </h2>
+                                <p className="text-lg text-left font-bold">
+                                    JaGedo Oversees
+                                </p>
+                                <ul className="space-y-3 mt-4">
+                                    <li className="flex items-center">
+                                        <TiTick className="text-green-300 mr-2 text-xl" />
+                                        Time: Duration of Execution
+                                    </li>
+                                    <li className="flex items-center">
+                                        <TiTick className="text-green-300 mr-2 text-xl" />
+                                        Scope of budget: Determined through Competitive bidding
+                                    </li>
+                                    <li className="flex items-center">
+                                        <TiTick className="text-green-300 mr-2 text-xl" />
+                                        Quality: Professionalism and peer reviewing
+                                    </li>
+                                </ul>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setSelectedPlan("self")}
+                                className={`cursor-pointer p-6 rounded-2xl shadow-lg transition hover:scale-105 ${selectedPlan?.toLowerCase() == "self"
+                                    ? "bg-[rgb(0,0,122)] text-white"
+                                    : "bg-blue-200 text-gray-800"
+                                    }`}
+                            >
+                                <h2 className="text-4xl font-bold mb-4">
+                                    Self
+                                </h2>
+                                <p className="text-lg text-left font-bold">
+                                    JaGedo Oversees
+                                </p>
+                                <ul className="space-y-3 mt-4">
+                                    <li className="flex items-center">
+                                        <TiTick className="text-green-500 mr-2 text-xl" />
+                                        Scope budget: Determined through Competitive bidding.
+                                    </li>
+                                    <p className="text-lg text-left font-bold">
+                                        Client manages
+                                    </p>
+                                    <li className="flex items-center">
+                                        <TiTick className="text-green-500 mr-2 text-xl" />
+                                        Time: Duration of Execution.
+                                    </li>
+                                    <li className="flex items-center">
+                                        <TiTick className="text-green-500 mr-2 text-xl" />
+                                        Quality: Professionalism and peer review.
+                                    </li>
+                                </ul>
+                            </button>
+                        </div>
+                    </section>
+                    <div className="bg-blue-200 text-gray-800 p-6 rounded-2xl shadow-lg hover:scale-105 transition">
+                        <h3 className="text-xl font-bold pb-2">
+                            Contractor Service Policy
+                        </h3>
+                        <p className="pb-4">
+                            For contractors, JaGedo facilitates project bidding,
+                            contract management, and milestone-based payments to
+                            ensure project success and accountability for all
+                            parties involved.
+                        </p>
+                        <h3 className="font-bold text-xl mb-4">
+                            Terms & Conditions
+                        </h3>
+                        <ul className="space-y-3 mt-4">
+                            <li className="flex items-center">
+                                <TiTick className="text-green-500 mr-2 text-xl" />
+                                Contractors must be registered and vetted by
+                                JaGedo.
+                            </li>
+                            <li className="flex items-center">
+                                <TiTick className="text-green-500 mr-2 text-xl" />
+                                Bids are binding and subject to the terms
+                                outlined in the project scope.
+                            </li>
+                            <li className="flex items-center">
+                                <TiTick className="text-green-500 mr-2 text-xl" />
+                                All payments are managed via the Jagedo Escrow
+                                system to protect both client and contractor.
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="flex justify-center items-center space-x-2 pt-2">
+                        <Checkbox
+                            id="acceptPolicyContractor"
+                            checked={acceptedPolicy}
+                            onCheckedChange={(checked) =>
+                                setAcceptedPolicy(checked as boolean)
+                            }
+                        />
+                        <label
+                            htmlFor="acceptPolicyContractor"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                            <span
+                                className="cursor-pointer text-blue-600 hover:underline"
+                                onClick={() => window.open("https://jagedo.s3.us-east-1.amazonaws.com/legal/JaGedo%20Contractors%20Agreement.pdf", "_blank")}
+                            >
+                                I agree to the Contractor's Agreement
+                            </span>
+                        </label>
+                    </div>
+                    <div className="pt-4 animate-fade-in-up animation-delay-400 flex items-center">
+                        <Button
+                            type="submit"
+                            className="w-fit bg-[#00007a] hover:bg-[#00007a]/90 text-white py-6 text-lg px-6 mx-auto mb-4"
+                            disabled={!isFormValid() || isSubmitting}
+                        >
+                            {isSubmitting
+                                ? "Submitting Request..."
+                                : "Request For Quotation"}
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    );
+};
