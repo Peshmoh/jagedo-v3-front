@@ -12,6 +12,13 @@ import { loginUser, verifyOtpLogin, phoneLogin } from "@/api/auth.api";
 import GoogleSignIn from "@/components/GoogleSignIn"
 import { jwtDecode } from "jwt-decode";
 
+const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const isValidPhone = (phone) =>
+    /^\d{10}$/.test(phone);
+
+
 // Mock components for demonstration
 const Button = ({
     children,
@@ -83,14 +90,18 @@ export default function Login() {
         }
 
         if (isOtpFlow) {
-            const isPhone = /^[\+]?[0-9\s\-()]+$/.test(formData.email);
-            if (!isPhone) {
-                newErrors.email = "Please enter a valid phone number for OTP login";
-            }
-            if (otpSent && !otp) {
-                newErrors.otp = "OTP is required";
-            }
-        } else {
+    const phone = formData.email.replace(/\D/g, "");
+    const email = formData.email.trim();
+
+    if (!isValidPhone(phone) && !isValidEmail(email)) {
+        newErrors.email = "Enter phone number or email";
+    }
+
+    if (otpSent && !otp) {
+        newErrors.otp = "OTP is required";
+    }
+}
+else {
             if (!formData.password) {
                 newErrors.password = "Password is required";
             } else if (formData.password.length < 6) {
@@ -121,43 +132,85 @@ export default function Login() {
             const isPhone = /^[\+]?[0-9\s\-()]+$/.test(formData.email);
 
             if (isOtpFlow) {
-                // --- OTP flow logic starts here ---
-                const normalizedPhone = normalizePhoneNumber(formData.email); // Use the normalized number
+    const phone = formData.email.replace(/\D/g, "");
+    const email = formData.email.trim();
+    const usingPhone = isValidPhone(phone);
+    const usingEmail = isValidEmail(email);
 
-                if (!otpSent) {
-                    // Send OTP request
-                    response = await phoneLogin({
-                        phoneNumber: normalizedPhone // Send normalized number
-                    });
+    // ============================
+    // SEND OTP
+    // ============================
+    if (!otpSent) {
+        if (usingPhone) {
+            // EXISTING PHONE OTP (API)
+            response = await phoneLogin({ phoneNumber: phone });
 
-                    if (response?.success) {
-                        setOtpSent(true);
-                        toast.success("OTP sent successfully!");
-                    } else {
-                        toast.error(`Failed to send OTP: ${response?.message || "Unknown error"}`);
-                    }
-                } else {
-                    // Verify OTP
-                    response = await verifyOtpLogin({
-                        phoneNumber: normalizedPhone, // Send normalized number
-                        otp: otp
-                    });
-
-                    if (response?.success) {
-                        localStorage.setItem("user", JSON.stringify(response.user));
-                        localStorage.setItem("token", response.accessToken);
-                        const rocketAuthToken = jwtDecode(response.accessToken).rocketAuthToken;
-                        console.log("Decoded Rocket Auth Token:", rocketAuthToken);
-                        localStorage.setItem("rocketAuthToken", rocketAuthToken);
-                        setUser(response.user);
-                        setIsLoggedIn(true);
-                        toast.success("Login successful! Redirecting to dashboard...");
-                        redirectUser(response.user.userType);
-                    } else {
-                        toast.error(`Failed to verify OTP: ${response?.message || "Invalid OTP"}`);
-                    }
-                }
+            if (response?.success) {
+                setOtpSent(true);
+                toast.success("OTP sent successfully!");
             } else {
+                toast.error(response?.message || "Failed to send OTP");
+            }
+        } else if (usingEmail) {
+            // MOCK EMAIL OTP
+            setOtpSent(true);
+            toast.success("OTP sent to email (mock)");
+        } else {
+            toast.error("Invalid phone number or email");
+        }
+    }
+
+    // ============================
+    // VERIFY OTP
+    // ============================
+    else {
+        if (!/^\d{6}$/.test(otp)) {
+            toast.error("OTP must be 6 digits");
+            setIsLoading(false);
+            return;
+        }
+
+        if (usingPhone) {
+            // EXISTING PHONE OTP VERIFY (API)
+            response = await verifyOtpLogin({
+                phoneNumber: phone,
+                otp,
+            });
+
+            if (response?.success) {
+                localStorage.setItem("user", JSON.stringify(response.user));
+                localStorage.setItem("token", response.accessToken);
+
+                const rocketAuthToken = jwtDecode(response.accessToken)?.rocketAuthToken;
+                if (rocketAuthToken) {
+                    localStorage.setItem("rocketAuthToken", rocketAuthToken);
+                }
+
+                setUser(response.user);
+                setIsLoggedIn(true);
+                toast.success("Login successful!");
+                redirectUser(response.user.userType);
+            } else {
+                toast.error(response?.message || "Invalid OTP");
+            }
+        } else if (usingEmail) {
+            // MOCK EMAIL OTP VERIFY
+            const mockUser = {
+                userType: "customer",
+                email,
+                name: "Guest User",
+            };
+
+            localStorage.setItem("user", JSON.stringify(mockUser));
+            setUser(mockUser);
+            setIsLoggedIn(true);
+
+            toast.success("Login successful!");
+            redirectUser("customer");
+        }
+    }
+}
+else {
                 // --- CHANGE 2: STANDARD PASSWORD LOGIN NOW REJECTS PHONE NUMBERS ---
                 if (isPhone) {
                     toast.error("To log in with a phone number, please use the 'Login with OTP' option.");
@@ -260,7 +313,7 @@ export default function Login() {
                             id="email"
                             name="email"
                             type="text"
-                            placeholder={isOtpFlow ? "Enter phone number" : "Enter phone number or email"}
+                            placeholder={isOtpFlow ? "Enter phone number or email" : "Enter phone number or email"}
                             className="w-full h-12 px-4 border border-gray-300 rounded-lg"
                             value={formData.email}
                             onChange={handleInputChange}
