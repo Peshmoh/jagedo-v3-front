@@ -189,7 +189,7 @@ export default function CustomerSignup() {
         setShowProfileCompletionModal(false);
         
         setTimeout(() => {
-            navigate("/dashboard/customer");
+            navigate("/profile");
         }, 1500);
     };
 

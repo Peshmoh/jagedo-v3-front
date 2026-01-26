@@ -226,7 +226,7 @@ export default function HardwareSignup() {
         toast.success("Profile completed! Redirecting to dashboard...");
         setShowProfileCompletionModal(false);
         setTimeout(() => {
-            navigate("/dashboard/hardware");
+            navigate("/profile");
         }, 1500);
     };
 

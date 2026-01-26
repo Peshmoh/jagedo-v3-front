@@ -226,7 +226,7 @@ export default function ContractorSignup() {
         toast.success("Profile completed! Redirecting to dashboard...");
         setShowProfileCompletionModal(false);
         setTimeout(() => {
-            navigate("/dashboard/contractor");
+            navigate("/profile");
         }, 1500);
     };
 

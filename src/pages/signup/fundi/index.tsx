@@ -177,7 +177,7 @@ export default function FundiSignup() {
         toast.success("Profile completed! Redirecting to dashboard...");
         setShowProfileCompletionModal(false);
         setTimeout(() => {
-            navigate("/dashboard/fundi");
+            navigate("/profile");
         }, 1500);
     };
 

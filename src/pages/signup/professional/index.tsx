@@ -202,7 +202,7 @@ export default function ProfessionalSignup() {
         toast.success("Profile completed! Redirecting to dashboard...");
         setShowProfileCompletionModal(false);
         setTimeout(() => {
-            navigate("/dashboard/professional");
+            navigate("/profile");
         }, 1500);
     };
 
