@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FiEdit } from "react-icons/fi";
 import { toast, Toaster } from "sonner";
-import { getAllCountries } from "@/api/countries.api";
+// import { getAllCountries } from "@/api/countries.api";
 import { counties } from "@/pages/data/counties";
 import {
   getUserAddress,
@@ -28,6 +28,25 @@ const Address = ({ userData }) => {
   const [countriesList, setCountriesList] = useState<any[]>([]);
   const [isLoadingCountries, setIsLoadingCountries] = useState(true);
 
+  // --- ORIGINAL API-based countries fetch (commented out) ---
+  // useEffect(() => {
+  //   const fetchCountries = async () => {
+  //     try {
+  //       const data = await getAllCountries();
+  //       //@ts-ignore
+  //       setCountriesList(data.hashSet || []);
+  //     } catch (error) {
+  //       console.error("Failed to fetch countries:", error);
+  //       toast.error("Could not load country list.");
+  //     } finally {
+  //       setIsLoadingCountries(false);
+  //     }
+  //   };
+  //   fetchCountries();
+  // }, []);
+  // --- END ORIGINAL ---
+
+  // --- localStorage / static fallback for countries ---
   useEffect(() => {
     const fetchCountries = async () => {
       const data = await getAllCountries();
@@ -90,7 +109,29 @@ const Address = ({ userData }) => {
     });
   };
 
-  const handleEdit = async () => {
+  // --- ORIGINAL API-based address update (commented out) ---
+  // const handleEdit = async () => {
+  //   try {
+  //     setIsSubmitting(true);
+  //     const response = await adminUpdateAddress(axiosInstance, address, userData.id);
+  //     if (response.success) {
+  //       toast.success("Address Updated Successfully");
+  //     } else {
+  //       toast.error(response.message || "Error Updating Address");
+  //     }
+  //   } catch (error: any) {
+  //     console.log(error);
+  //     toast.error(error.message || "Error Updating Address");
+  //   } finally {
+  //     setIsEditing(false);
+  //     setIsSubmitting(false);
+  //   }
+  // };
+  // --- END ORIGINAL ---
+
+  // --- localStorage-based address update ---
+  const handleEdit = () => {
+    setIsSubmitting(true);
     try {
       setIsSubmitting(true);
       updateUserAddress(userData.id, address);
