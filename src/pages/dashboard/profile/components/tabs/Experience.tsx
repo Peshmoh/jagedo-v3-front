@@ -52,9 +52,18 @@ const Experience = ({ userData }) => {
 
   // Get user type from userData
   const userType = userData?.userType || "FUNDI";
+  const status = userData?.status;
+
+  // Statuses that should prefill/show existing data
+  const PREFILL_STATUSES = ["COMPLETED", "VERIFIED", "PENDING", "RETURNED"];
 
   // Initialize attachments based on user type
   const getInitialAttachments = () => {
+    // For SIGNED_UP or INCOMPLETE, return empty attachments
+    if (!PREFILL_STATUSES.includes(status)) {
+      return [];
+    }
+
     let projectData = [];
 
     switch (userType) {
@@ -176,6 +185,11 @@ const removeCategory = (index: number) => {
 
   // Initialize info from userData.userProfile based on user type
   const getInitialInfo = () => {
+    // For SIGNED_UP or INCOMPLETE, return default empty values
+    if (!PREFILL_STATUSES.includes(status)) {
+      return getDefaultInfo();
+    }
+
     if (!userData?.userProfile) {
       return getDefaultInfo();
     }
@@ -646,49 +660,57 @@ const removeCategory = (index: number) => {
 
   // Pre-populate questions with existing evaluation data (same structure for all user types)
   const getInitialQuestions = () => {
-    // Use fundiEvaluation for all user types to maintain API compatibility
-    const evaluation = userData?.userProfile?.fundiEvaluation;
+  const evaluation = userData?.userProfile?.fundiEvaluation;
 
-    if (!evaluation) {
-      return initialQuestions;
-    }
+  // If status should NOT prefill → return empty form
+  if (!PREFILL_STATUSES.includes(status)) {
+    return initialQuestions;
+  }
 
-    return [
-      {
-        id: 1,
-        text: "Have you done any major works in the construction industry?",
-        type: "select",
-        options: ["Yes", "No"],
-        answer: evaluation.hasMajorWorks || "",
-        score: evaluation.majorWorksScore || 0,
-        isEditing: false,
-      },
-      {
-        id: 2,
-        text: "State the materials that you have been using mostly for your jobs",
-        type: "text",
-        answer: evaluation.materialsUsed || "",
-        score: evaluation.materialsUsedScore || 0,
-        isEditing: false,
-      },
-      {
-        id: 3,
-        text: "Name essential equipment that you have been using for your job",
-        type: "text",
-        answer: evaluation.essentialEquipment || "",
-        score: evaluation.essentialEquipmentScore || 0,
-        isEditing: false,
-      },
-      {
-        id: 4,
-        text: "How do you always formulate your quotations?",
-        type: "text",
-        answer: evaluation.quotationFormulation || "",
-        score: evaluation.quotationFormulaScore || 0,
-        isEditing: false,
-      },
-    ];
-  };
+  // If no evaluation exists → still return empty
+  if (!evaluation) {
+    return initialQuestions;
+  }
+
+  // Otherwise → prefill from evaluation
+  return [
+    {
+      id: 1,
+      text: "Have you done any major works in the construction industry?",
+      type: "select",
+      options: ["Yes", "No"],
+      answer: evaluation.hasMajorWorks || "",
+      score: evaluation.majorWorksScore || 0,
+      isEditing: false,
+    },
+    {
+      id: 2,
+      text: "If yes, briefly describe them",
+      type: "text",
+      answer: evaluation.majorWorksDescription || "",
+      score: evaluation.majorWorksDescScore || 0,
+      isEditing: false,
+    },
+    {
+      id: 3,
+      text: "Do you always complete your projects on time?",
+      type: "select",
+      options: ["Yes", "No"],
+      answer: evaluation.completesOnTime || "",
+      score: evaluation.onTimeScore || 0,
+      isEditing: false,
+    },
+    {
+      id: 4,
+      text: "How do you always formulate your quotations?",
+      type: "text",
+      answer: evaluation.quotationFormulation || "",
+      score: evaluation.quotationFormulaScore || 0,
+      isEditing: false,
+    },
+  ];
+};
+
 
   const [questions, setQuestions] = useState(getInitialQuestions());
 
@@ -1744,10 +1766,11 @@ const removeCategory = (index: number) => {
 
             <div className="mt-6 text-right">
               <div className="relative inline-block">
-                {/* Show Verify Button only if not admin approved and profile is uploaded */}
+                {/* Show Verify Button only if not admin approved, profile is complete, and status allows verification */}
                 {!userData?.adminApproved &&
                   !userData?.approved &&
-                  userData?.userProfile?.complete && (
+                  userData?.userProfile?.complete &&
+                  PREFILL_STATUSES.includes(status) && (
                     <button
                       type="button"
                       onClick={handleVerify}
@@ -1757,6 +1780,13 @@ const removeCategory = (index: number) => {
                       {isVerifying ? "Verifying..." : "Verify"}
                     </button>
                   )}
+
+                {/* Show message for incomplete accounts */}
+                {(status === "SIGNED_UP" || status === "INCOMPLETE") && (
+                  <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                    Account incomplete - Cannot verify
+                  </span>
+                )}
 
                 {/* Show Verified Badge if admin approved */}
                 {userData?.adminApproved && (
