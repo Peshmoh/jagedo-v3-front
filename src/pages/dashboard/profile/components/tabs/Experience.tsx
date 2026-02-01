@@ -15,20 +15,39 @@ import { UploadCloud, FileText } from "lucide-react";
 import { SquarePen } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
-// --- Helper: update a user in localStorage "users" array ---
+// --- Helper: update a user in localStorage across all storage keys ---
 const updateUserInLocalStorage = (
   userId: string,
   updates: Record<string, any>,
 ) => {
   try {
+    // Update in "users" array
     const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
-    const idx = storedUsers.findIndex((u: any) => u.id === userId);
-    if (idx !== -1) {
-      storedUsers[idx] = { ...storedUsers[idx], ...updates };
+    const usersIdx = storedUsers.findIndex((u: any) => u.id === userId || u.id === Number(userId) || u.id === String(userId));
+    if (usersIdx !== -1) {
+      storedUsers[usersIdx] = { ...storedUsers[usersIdx], ...updates };
       localStorage.setItem("users", JSON.stringify(storedUsers));
     }
+
+    // Update in "builders" array (for admin dashboard sync)
+    const storedBuilders = JSON.parse(localStorage.getItem("builders") || "[]");
+    const buildersIdx = storedBuilders.findIndex((b: any) => b.id === userId || b.id === Number(userId) || b.id === String(userId));
+    if (buildersIdx !== -1) {
+      storedBuilders[buildersIdx] = { ...storedBuilders[buildersIdx], ...updates };
+      localStorage.setItem("builders", JSON.stringify(storedBuilders));
+    }
+
+    // Update in "customers" array (for admin dashboard sync)
+    const storedCustomers = JSON.parse(localStorage.getItem("customers") || "[]");
+    const customersIdx = storedCustomers.findIndex((c: any) => c.id === userId || c.id === Number(userId) || c.id === String(userId));
+    if (customersIdx !== -1) {
+      storedCustomers[customersIdx] = { ...storedCustomers[customersIdx], ...updates };
+      localStorage.setItem("customers", JSON.stringify(storedCustomers));
+    }
+
+    // Update single "user" key if it matches
     const singleUser = JSON.parse(localStorage.getItem("user") || "null");
-    if (singleUser && singleUser.id === userId) {
+    if (singleUser && (singleUser.id === userId || singleUser.id === Number(userId) || singleUser.id === String(userId))) {
       localStorage.setItem(
         "user",
         JSON.stringify({ ...singleUser, ...updates }),
