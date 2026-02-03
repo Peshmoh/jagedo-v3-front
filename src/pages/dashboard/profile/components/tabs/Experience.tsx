@@ -933,9 +933,26 @@ const removeCategory = (index: number) => {
       <Toaster position="top-center" richColors />
       <div className="bg-gray-50 min-h-screen w-full">
         <div className="max-w-6xl bg-white rounded-xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold mb-8 text-gray-800">
-            {userData?.userType} Experience
-          </h1>
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-3xl font-bold text-gray-800">
+              {userData?.userType} Experience
+            </h1>
+            <button
+              type="button"
+              onClick={() => {
+                // Save all changes across the page
+                if (isEditingFields) {
+                  handleEditSkill(editingFields);
+                } else {
+                  toast.success("All changes saved successfully!");
+                }
+              }}
+              disabled={isSavingInfo}
+              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            >
+              {isSavingInfo ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
 
           <form onSubmit={handleEvaluationSubmit} className="space-y-8">
             {/* Skills Section */}
