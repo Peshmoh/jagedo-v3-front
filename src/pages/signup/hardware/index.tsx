@@ -20,7 +20,7 @@ export default function HardwareSignup() {
     const [showProfileCompletionModal, setShowProfileCompletionModal] = useState(false);
     const [registeredUser, setRegisteredUser] = useState<any>(null);
     const [formData, setFormData] = useState({
-        accountType: "INDIVIDUAL",
+        accountType: "ORGANIZATION",
         skills: "",
         profession: "",
         contractorTypes: "",
@@ -168,8 +168,8 @@ export default function HardwareSignup() {
             email: formData.email,
             password: formData.password,
             userType: "HARDWARE",
-            firstName: formData.firstName || "Pending",
-            lastName: formData.lastName || "User",
+            // firstName: formData.firstName || "Pending",
+            // lastName: formData.lastName || "User",
             accountType: formData.accountType,
             phone: formData.phone,
             profileCompleted: false
@@ -270,6 +270,7 @@ export default function HardwareSignup() {
                 isOpen={showProfileCompletionModal}
                 user={registeredUser}
                 accountType={"HARDWARE" as any}
+                userType="HARDWARE"
                 onComplete={handleProfileComplete}
                 onClose={() => setShowProfileCompletionModal(false)}
             />

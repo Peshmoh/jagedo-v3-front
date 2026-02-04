@@ -26,12 +26,61 @@ interface UploadedDocument {
   reviewedBy?: string;
 }
 
-const AccountUploads = ({ userData }: { userData: any }) => {
+// Helper to update user in localStorage
+const updateUserInLocalStorage = (
+  userId: string | number,
+  updates: Record<string, any>,
+) => {
+  try {
+    // Update in "users" array
+    const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+    const userIdx = storedUsers.findIndex((u: any) => u.id === userId || u.id === Number(userId) || u.id === String(userId));
+    if (userIdx !== -1) {
+      storedUsers[userIdx] = { ...storedUsers[userIdx], ...updates };
+      localStorage.setItem("users", JSON.stringify(storedUsers));
+    }
+
+    // Update in "builders" array
+    const storedBuilders = JSON.parse(localStorage.getItem("builders") || "[]");
+    const builderIdx = storedBuilders.findIndex((b: any) => b.id === userId || b.id === Number(userId) || b.id === String(userId));
+    if (builderIdx !== -1) {
+      storedBuilders[builderIdx] = { ...storedBuilders[builderIdx], ...updates };
+      localStorage.setItem("builders", JSON.stringify(storedBuilders));
+    }
+
+    // Update in "customers" array
+    const storedCustomers = JSON.parse(localStorage.getItem("customers") || "[]");
+    const customerIdx = storedCustomers.findIndex((c: any) => c.id === userId || c.id === Number(userId) || c.id === String(userId));
+    if (customerIdx !== -1) {
+      storedCustomers[customerIdx] = { ...storedCustomers[customerIdx], ...updates };
+      localStorage.setItem("customers", JSON.stringify(storedCustomers));
+    }
+
+    // Update single "user" key
+    const singleUser = JSON.parse(localStorage.getItem("user") || "null");
+    if (singleUser && (singleUser.id === userId || singleUser.id === Number(userId) || singleUser.id === String(userId))) {
+      localStorage.setItem("user", JSON.stringify({ ...singleUser, ...updates }));
+    }
+  } catch (err) {
+    console.error("Failed to update user in localStorage:", err);
+  }
+};
+
+interface AccountUploadsProps {
+  userData: any;
+  isAdmin?: boolean; // When true, shows admin actions (approve, reject, etc.)
+}
+
+const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
   if (!userData) return <div className="p-8">Loading...</div>;
 
   const [documents, setDocuments] = useState<Record<string, UploadedDocument>>({});
   const [uploadingFiles, setUploadingFiles] = useState<Record<string, boolean>>({});
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  // Global actions dropdown state
+  const [showGlobalActions, setShowGlobalActions] = useState(false);
 
   // Action modal state
   const [actionModal, setActionModal] = useState<{
@@ -119,13 +168,60 @@ const AccountUploads = ({ userData }: { userData: any }) => {
 
     // Contractor (Organization builder)
     if (userType === "contractor") {
-      return [
+      const baseDocs: DocumentItem[] = [
         ...organizationBaseDocs,
         { key: "ncaCertificate", name: "NCA Certificate", category: "certification" },
-        { key: "portfolio1", name: "Portfolio - Project 1", category: "portfolio" },
-        { key: "portfolio2", name: "Portfolio - Project 2", category: "portfolio" },
-        { key: "portfolio3", name: "Portfolio - Project 3", category: "portfolio" },
       ];
+
+      // Add category-based documents from contractor categories
+      const contractorCategories = userData?.userProfile?.contractorCategories || userData?.userProfile?.contractorExperiences;
+      if (Array.isArray(contractorCategories) && contractorCategories.length > 0) {
+        contractorCategories.forEach((cat: any, index: number) => {
+          const categoryName = cat.category || `Category ${index + 1}`;
+          // Create a safe key from the category name
+          const safeKey = categoryName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+
+          // Add certificate and license for each category
+          baseDocs.push({
+            key: `${safeKey}_certificate_${index}`,
+            name: `${categoryName} Certificate`,
+            category: "certification",
+          });
+          baseDocs.push({
+            key: `${safeKey}_license_${index}`,
+            name: `${categoryName} Practice License`,
+            category: "certification",
+          });
+
+          // Add project documents for each category (3 projects per category)
+          baseDocs.push({
+            key: `${safeKey}_project1_${index}`,
+            name: `${categoryName} - Project 1`,
+            category: "portfolio",
+          });
+          baseDocs.push({
+            key: `${safeKey}_project2_${index}`,
+            name: `${categoryName} - Project 2`,
+            category: "portfolio",
+          });
+          baseDocs.push({
+            key: `${safeKey}_project3_${index}`,
+            name: `${categoryName} - Project 3`,
+            category: "portfolio",
+          });
+        });
+      }
+
+      // Add general portfolio items (if no categories yet)
+      if (!Array.isArray(contractorCategories) || contractorCategories.length === 0) {
+        baseDocs.push(
+          { key: "portfolio1", name: "Portfolio - Project 1", category: "portfolio" },
+          { key: "portfolio2", name: "Portfolio - Project 2", category: "portfolio" },
+          { key: "portfolio3", name: "Portfolio - Project 3", category: "portfolio" }
+        );
+      }
+
+      return baseDocs;
     }
 
     // Hardware (Organization builder)
@@ -315,7 +411,6 @@ const AccountUploads = ({ userData }: { userData: any }) => {
   const DocumentCard = ({ doc }: { doc: DocumentItem }) => {
     const uploaded = documents[doc.key];
     const isUploading = uploadingFiles[doc.key];
-    const [showActions, setShowActions] = useState(false);
 
     if (!uploaded) {
       // Empty state - needs upload
@@ -401,7 +496,7 @@ const AccountUploads = ({ userData }: { userData: any }) => {
           </div>
         )}
 
-        {/* Action buttons */}
+        {/* Action buttons - View, Download, Replace */}
         <div className="flex gap-2 flex-wrap">
           <a
             href={uploaded.url}
@@ -420,87 +515,22 @@ const AccountUploads = ({ userData }: { userData: any }) => {
             <FiDownload className="w-3.5 h-3.5" />
             Download
           </a>
-
-          {/* Admin Actions Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setShowActions(!showActions)}
-              className="flex items-center gap-1 py-2 px-3 border border-blue-200 rounded-lg text-blue-600 text-xs font-medium hover:bg-blue-50 transition"
-            >
-              Actions
-              <FiChevronDown className={`w-3.5 h-3.5 transition-transform ${showActions ? "rotate-180" : ""}`} />
-            </button>
-            {showActions && (
-              <div className="absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                {status !== "approved" && (
-                  <button
-                    onClick={() => {
-                      setShowActions(false);
-                      openActionModal(doc.key, "approve");
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-green-700 hover:bg-green-50 transition"
-                  >
-                    <FiCheck className="w-3.5 h-3.5" />
-                    Approve
-                  </button>
-                )}
-                {status !== "rejected" && (
-                  <button
-                    onClick={() => {
-                      setShowActions(false);
-                      openActionModal(doc.key, "reject");
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-700 hover:bg-red-50 transition"
-                  >
-                    <FiX className="w-3.5 h-3.5" />
-                    Reject
-                  </button>
-                )}
-                <button
-                  onClick={() => {
-                    setShowActions(false);
-                    openActionModal(doc.key, "reupload");
-                  }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-blue-700 hover:bg-blue-50 transition"
-                >
-                  <FiRefreshCw className="w-3.5 h-3.5" />
-                  Request Re-upload
-                </button>
-                <button
-                  onClick={() => {
-                    setShowActions(false);
-                    handleDelete(doc.key);
-                  }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 transition border-t border-gray-100"
-                >
-                  <FiTrash2 className="w-3.5 h-3.5" />
-                  Delete
-                </button>
-              </div>
-            )}
-          </div>
+          <label className="flex-1 cursor-pointer">
+            <div className="flex items-center justify-center gap-1 py-2 px-2 border border-blue-200 rounded-lg text-blue-600 text-xs font-medium hover:bg-blue-50 transition">
+              <FiUpload className="w-3.5 h-3.5" />
+              Replace
+            </div>
+            <input
+              type="file"
+              className="hidden"
+              accept="image/*,.pdf"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleUpload(file, doc.key);
+              }}
+            />
+          </label>
         </div>
-
-        {/* Re-upload option for rejected/reupload_requested documents */}
-        {(status === "rejected" || status === "reupload_requested") && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <label className="cursor-pointer">
-              <div className="flex items-center justify-center gap-2 py-2 px-4 border border-dashed border-blue-300 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition">
-                <FiUpload className="w-4 h-4" />
-                Upload New Document
-              </div>
-              <input
-                type="file"
-                className="hidden"
-                accept="image/*,.pdf"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleUpload(file, doc.key);
-                }}
-              />
-            </label>
-          </div>
-        )}
       </div>
     );
   };
@@ -528,7 +558,7 @@ const AccountUploads = ({ userData }: { userData: any }) => {
   };
 
   /* -------------------- Action Modal -------------------- */
-  const ActionModal = () => {
+  const renderActionModal = () => {
     if (!actionModal.isOpen) return null;
 
     const { action, docKey } = actionModal;
@@ -562,14 +592,16 @@ const AccountUploads = ({ userData }: { userData: any }) => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+        <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">{config.title}</h3>
           <p className="text-sm text-gray-600 mb-4">{config.description}</p>
 
           {config.needsReason && (
             <textarea
+              autoFocus
               value={actionReason}
               onChange={(e) => setActionReason(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
               placeholder="Enter reason..."
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               rows={3}
@@ -578,12 +610,14 @@ const AccountUploads = ({ userData }: { userData: any }) => {
 
           <div className="flex gap-3 mt-4">
             <button
+              type="button"
               onClick={submitAction}
               className={`flex-1 py-2 px-4 text-white rounded-lg font-medium transition ${config.buttonColor}`}
             >
               {config.buttonText}
             </button>
             <button
+              type="button"
               onClick={closeActionModal}
               className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition"
             >
@@ -599,7 +633,7 @@ const AccountUploads = ({ userData }: { userData: any }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Toaster position="top-center" />
-      <ActionModal />
+      {renderActionModal()}
 
       <div className="p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
@@ -611,7 +645,133 @@ const AccountUploads = ({ userData }: { userData: any }) => {
                 ID documents, certificates, and portfolio items
               </p>
             </div>
-            <StatusBadge status={overallStatus as DocumentStatus} />
+            <div className="flex items-center gap-3">
+              <StatusBadge status={overallStatus as DocumentStatus} />
+
+              {/* Verify Button - Admin Only */}
+              {isAdmin && !userData?.adminApproved && (
+                <button
+                  onClick={() => {
+                    setIsVerifying(true);
+                    updateUserInLocalStorage(userData.id, {
+                      adminApproved: true,
+                      approved: true,
+                      status: "VERIFIED",
+                    });
+                    Object.assign(userData, {
+                      adminApproved: true,
+                      approved: true,
+                      status: "VERIFIED",
+                    });
+                    toast.success("User profile has been verified successfully!");
+                    setIsVerifying(false);
+                  }}
+                  disabled={isVerifying}
+                  className="flex items-center gap-2 py-2 px-4 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isVerifying ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      Verify
+                    </>
+                  )}
+                </button>
+              )}
+
+              {/* Verified Badge */}
+              {userData?.adminApproved && (
+                <span className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-800 border border-green-200">
+                  <CheckCircle className="w-4 h-4" />
+                  Verified
+                </span>
+              )}
+
+              {/* Global Actions Dropdown - Admin Only */}
+              {isAdmin && (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowGlobalActions(!showGlobalActions)}
+                    className="flex items-center gap-2 py-2 px-4 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                  >
+                    Actions
+                    <FiChevronDown className={`w-4 h-4 transition-transform ${showGlobalActions ? "rotate-180" : ""}`} />
+                  </button>
+                  {showGlobalActions && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                      <button
+                        onClick={() => {
+                          setShowGlobalActions(false);
+                          // Edit mode - could toggle edit state
+                          toast.info("Edit mode enabled - you can now modify documents");
+                        }}
+                        className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition border-b border-gray-100"
+                      >
+                        <FiRefreshCw className="w-4 h-4" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowGlobalActions(false);
+                          // Return - request reupload for all pending documents
+                          const pendingDocs = allDocuments.filter(d => documents[d.key]?.status === "pending");
+                          if (pendingDocs.length > 0) {
+                            pendingDocs.forEach(doc => {
+                              openActionModal(doc.key, "reupload");
+                            });
+                          } else {
+                            toast.info("No pending documents to return");
+                          }
+                        }}
+                        className="w-full flex items-center gap-2 px-4 py-3 text-sm text-amber-700 hover:bg-amber-50 transition border-b border-gray-100"
+                      >
+                        <FiRefreshCw className="w-4 h-4" />
+                        Return
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowGlobalActions(false);
+                          // Approve all pending documents
+                          const pendingDocs = allDocuments.filter(d =>
+                            documents[d.key] && documents[d.key].status !== "approved"
+                          );
+                          if (pendingDocs.length > 0) {
+                            const now = new Date().toISOString();
+                            setDocuments(prev => {
+                              const updated = { ...prev };
+                              pendingDocs.forEach(doc => {
+                                if (updated[doc.key]) {
+                                  updated[doc.key] = {
+                                    ...updated[doc.key],
+                                    status: "approved",
+                                    statusReason: "Document verified and approved",
+                                    statusDate: now,
+                                    reviewedBy: "Admin",
+                                  };
+                                }
+                              });
+                              return updated;
+                            });
+                            toast.success(`${pendingDocs.length} document(s) approved`);
+                          } else {
+                            toast.info("All documents are already approved");
+                          }
+                        }}
+                        className="w-full flex items-center gap-2 px-4 py-3 text-sm text-green-700 hover:bg-green-50 transition"
+                      >
+                        <FiCheck className="w-4 h-4" />
+                        Approve
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+            </div>
           </div>
 
           {/* Progress indicator */}
@@ -670,6 +830,42 @@ const AccountUploads = ({ userData }: { userData: any }) => {
               <p className="text-gray-500">
                 There are no document requirements for this user type.
               </p>
+            </div>
+          )}
+
+
+          {/* Status indicator for non-admin users */}
+          {!isAdmin && allDocuments.length > 0 && (
+            <div className="mt-8 border-t pt-6">
+              {userData?.adminApproved ? (
+                <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-8 h-8 text-green-600" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-green-800">
+                        Profile Verified
+                      </h3>
+                      <p className="text-sm text-green-600">
+                        Your profile has been verified by an administrator.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-8 h-8 text-blue-600" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-blue-800">
+                        Verification In Progress
+                      </h3>
+                      <p className="text-sm text-blue-600">
+                        {approvedCount} of {totalRequired} required documents have been approved. Please ensure all documents are uploaded for verification.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -10,8 +10,8 @@ import {
   PencilIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
-import { UploadCloud, FileText } from "lucide-react";
-
+import { UploadCloud, FileText, CheckCircle } from "lucide-react";
+import { FiCheck } from "react-icons/fi";
 import { SquarePen } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
@@ -388,6 +388,7 @@ const updateUserInLocalStorage = (
 };
 
 const Experience = ({ userData }) => {
+  
   console.log("User Data: ", userData);
   // const axiosInstance = useAxiosWithAuth(import.meta.env.VITE_SERVER_URL)
   const [isEditingFields, setIsEditingFields] = useState(false);
@@ -507,14 +508,29 @@ const CATEGORY_OPTIONS = [
     [key: string]: boolean;
   }>({});
   const [newProjects, setNewProjects] = useState<{ [key: string]: any }>({});
-const [categories, setCategories] = useState<ContractorCategory[]>([
-  {
-    category: "",
-    specialization: "",
-    class: "",
-    years: "",
-  },
-]);
+// Initialize categories from userData or defaults
+const getInitialCategories = (): ContractorCategory[] => {
+  if (userData?.userProfile?.contractorCategories && Array.isArray(userData.userProfile.contractorCategories)) {
+    return userData.userProfile.contractorCategories.map((cat: any) => ({
+      category: cat.category || "",
+      specialization: cat.specialization || "",
+      class: cat.class || cat.categoryClass || "",
+      years: cat.years || cat.yearsOfExperience || "",
+    }));
+  }
+  // Fallback: try contractorExperiences if it's an array
+  if (userData?.userProfile?.contractorExperiences && Array.isArray(userData.userProfile.contractorExperiences)) {
+    return userData.userProfile.contractorExperiences.map((exp: any) => ({
+      category: exp.category || "",
+      specialization: exp.specialization || "",
+      class: exp.categoryClass || exp.class || "",
+      years: exp.yearsOfExperience || exp.years || "",
+    }));
+  }
+  return [{ category: "", specialization: "", class: "", years: "" }];
+};
+
+const [categories, setCategories] = useState<ContractorCategory[]>(getInitialCategories());
 const addCategory = () => {
   setCategories([
     ...categories,
@@ -587,10 +603,11 @@ const removeCategory = (index: number) => {
             userData.specialization ||
             defaultContSpec,
           class: userData.userProfile.licenseLevel || "",
-          yearsOfExperience:
-            userData.userProfile.contractorExperiences ||
-            userData?.contractorExperiences ||
-            "",
+         yearsOfExperience:
+  userData.userProfile.contractorExperiences?.[0]?.yearsOfExperience ||
+  userData?.contractorExperiences?.[0]?.yearsOfExperience ||
+  "",
+
         };
 
       case "HARDWARE":
@@ -746,7 +763,7 @@ const removeCategory = (index: number) => {
           {
             name: "yearsOfExperience",
             label: "Years of Experience",
-            options: ["20+ years", "15-20 years", "10-15 years", "5-10 years", "3-5 years", "1-3 years"],
+            options: ["10+ years", "7-10 years", "5-7 years", "3-5 years", "1-3 years", "Less than 1 year"],
           },
         ];
 
@@ -1045,43 +1062,104 @@ const removeCategory = (index: number) => {
     setFileActionLoading((prev) => ({ ...prev, [loadingKey]: false }));
   };
 
-  // Same evaluation questions for all user types
+  // Default evaluation questions template
+  const DEFAULT_EVALUATION_QUESTIONS = [
+    {
+      id: 1,
+      text: "Have you done any major works in the construction industry?",
+      type: "select",
+      options: ["Yes", "No"],
+      answer: "",
+      score: 0,
+      isEditing: false,
+    },
+    {
+      id: 2,
+      text: "State the materials that you have been using mostly for your jobs",
+      type: "text",
+      answer: "",
+      score: 0,
+      isEditing: false,
+    },
+    {
+      id: 3,
+      text: "Name essential equipment that you have been using for your job",
+      type: "text",
+      answer: "",
+      score: 0,
+      isEditing: false,
+    },
+    {
+      id: 4,
+      text: "How do you always formulate your quotations?",
+      type: "text",
+      answer: "",
+      score: 0,
+      isEditing: false,
+    },
+  ];
+
+  // Get skill-specific questions from localStorage or use defaults
   const getEvaluationQuestions = () => {
-    return [
+    const skill = userData?.userProfile?.skill || userData?.skills || info?.skill || "";
+
+    if (userType === "FUNDI" && skill) {
+      // Try to load skill-specific questions from localStorage
+      const storageKey = `evaluation_questions_${skill.toLowerCase()}`;
+      const storedQuestions = localStorage.getItem(storageKey);
+
+      if (storedQuestions) {
+        try {
+          const parsed = JSON.parse(storedQuestions);
+          // Reset answers and scores for new evaluation
+          return parsed.map((q: any) => ({
+            ...q,
+            answer: "",
+            score: 0,
+            isEditing: false,
+          }));
+        } catch (e) {
+          console.error("Failed to parse stored questions:", e);
+        }
+      }
+    }
+
+    return DEFAULT_EVALUATION_QUESTIONS;
+  };
+
+  // Save questions template for a skill type
+  const saveQuestionsTemplate = (skill: string, questionsToSave: any[]) => {
+    const storageKey = `evaluation_questions_${skill.toLowerCase()}`;
+    // Save only the question structure, not answers
+    const template = questionsToSave.map(q => ({
+      id: q.id,
+      text: q.text,
+      type: q.type,
+      options: q.options,
+    }));
+    localStorage.setItem(storageKey, JSON.stringify(template));
+    toast.success(`Evaluation questions saved for ${skill}`);
+  };
+
+  // Add a new question to the current skill
+  const addNewQuestion = () => {
+    const newId = questions.length > 0 ? Math.max(...questions.map(q => q.id)) + 1 : 1;
+    setQuestions(prev => [
+      ...prev,
       {
-        id: 1,
-        text: "Have you done any major works in the construction industry?",
-        type: "select",
-        options: ["Yes", "No"],
-        answer: "",
-        score: 0,
-        isEditing: false,
-      },
-      {
-        id: 2,
-        text: "State the materials that you have been using mostly for your jobs",
+        id: newId,
+        text: "New evaluation question",
         type: "text",
         answer: "",
         score: 0,
-        isEditing: false,
-      },
-      {
-        id: 3,
-        text: "Name essential equipment that you have been using for your job",
-        type: "text",
-        answer: "",
-        score: 0,
-        isEditing: false,
-      },
-      {
-        id: 4,
-        text: "How do you always formulate your quotations?",
-        type: "text",
-        answer: "",
-        score: 0,
-        isEditing: false,
-      },
-    ];
+        isEditing: true, // Start in edit mode so user can type the question
+      }
+    ]);
+  };
+
+  // Delete a question
+  const deleteQuestion = (questionId: number) => {
+    setQuestions(prev => prev.filter(q => q.id !== questionId));
   };
 
   const initialQuestions = getEvaluationQuestions();
@@ -1323,173 +1401,352 @@ const removeCategory = (index: number) => {
       <Toaster position="top-center" richColors />
       <div className="bg-gray-50 min-h-screen w-full">
         <div className="max-w-6xl bg-white rounded-xl shadow-lg p-8">
+          {/* Header with Approve Button */}
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl font-bold text-gray-800">
               {userData?.userType} Experience
             </h1>
-            <button
-              type="button"
-              onClick={() => {
-                // Save all changes across the page
-                if (isEditingFields) {
-                  handleEditSkill(editingFields);
-                } else {
-                  toast.success("All changes saved successfully!");
-                }
-              }}
-              disabled={isSavingInfo}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-            >
-              {isSavingInfo ? "Saving..." : "Save Changes"}
-            </button>
+            <div className="flex items-center gap-3">
+              {userData?.userProfile?.experienceApproved ? (
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-800 border border-green-200">
+                  <FiCheck className="w-4 h-4" />
+                  Experience Approved
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const profile = userData?.userProfile || {};
+                    const updatedProfile = {
+                      ...profile,
+                      experienceApproved: true,
+                      experienceApprovedAt: new Date().toISOString(),
+                    };
+                    userData.userProfile = updatedProfile;
+                    updateUserInLocalStorage(userData.id, { userProfile: updatedProfile });
+                    toast.success("Experience section has been approved!");
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                >
+                  <FiCheck className="w-4 h-4" />
+                  Approve
+                </button>
+              )}
+            </div>
           </div>
 
           <form onSubmit={handleEvaluationSubmit} className="space-y-8">
-            {/* Skills Section */}
+            {/* Skills Section - Card Based Design */}
             <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  {userData?.userType} Information
-                </h2>
-                <button
-                  type="button"
-                  onClick={() => setIsEditingFields((prev) => !prev)}
-                  className="focus:outline-none"
-                  disabled={isSavingInfo}
-                >
-                  <SquarePen className="h-6 w-6 text-blue-700" />
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
-                {fields.map((field, index) => (
-                  <div key={index} className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      {field.label}
-                    </label>
-                    <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                      {userType.toLowerCase() === "contractor" &&
-                      field.name == "experience" ? (
-                        <div className="overflow-x-auto">
-                          <table className="w-full table-auto border-collapse text-xs">
-                            <thead>
-                              <tr className="bg-gray-100 text-left text-xs font-semibold text-gray-600">
-                                <th className="px-2 py-2 border">Category</th>
-                                <th className="px-2 py-2 border">Class</th>
-                                <th className="px-2 py-2 border">Years</th>
-                                <th className="px-2 py-2 border">
-                                  Certificate
-                                </th>
-                                <th className="px-2 py-2 border">License</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {userData?.userProfile?.contractorExperiences?.map(
-                                (exp, idx) => (
-                                  <tr
-                                    key={idx}
-                                    className="border-b hover:bg-gray-50"
-                                  >
-                                    <td className="px-2 py-2 border text-xs">
-                                      {typeof exp === "object"
-                                        ? exp.category
-                                        : exp}
-                                    </td>
-                                    <td className="px-2 py-2 border text-xs">
-                                      {typeof exp === "object"
-                                        ? exp.categoryClass
-                                        : "N/A"}
-                                    </td>
-                                    <td className="px-2 py-2 border text-xs">
-                                      {typeof exp === "object"
-                                        ? exp.yearsOfExperience
-                                        : "N/A"}
-                                    </td>
-                                    <td className="px-2 py-2 border text-xs">
-                                      {typeof exp === "object" &&
-                                      exp.certificate ? (
-                                        <a
-                                          href={exp.certificate}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-blue-600 hover:text-blue-800 underline"
-                                        >
-                                          View
-                                        </a>
-                                      ) : (
-                                        "None"
-                                      )}
-                                    </td>
-                                    <td className="px-2 py-2 border text-xs">
-                                      {typeof exp === "object" &&
-                                      exp.license ? (
-                                        <a
-                                          href={exp.license}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-blue-600 hover:text-blue-800 underline"
-                                        >
-                                          View
-                                        </a>
-                                      ) : (
-                                        "None"
-                                      )}
-                                    </td>
-                                  </tr>
-                                ),
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      ) : isEditingFields ? (
-                        <select
-                          value={editingFields[field.name] ?? info[field.name] ?? ""}
-                          onChange={(e) => {
-                            setEditingFields((prev) => ({
-                              ...prev,
-                              [field.name]: e.target.value,
-                            }));
-                          }}
-                          className="w-full p-2 border border-blue-300 rounded-md text-sm"
-                        >
-                          <option value="" disabled>
-                            Select {field.label.toLowerCase()}
-                          </option>
-                          {field.options.map((opt, i) => (
-                            <option key={i} value={opt}>
-                              {opt}
+              <h2 className="text-xl font-semibold text-gray-800 mb-6">
+                {userData?.userType} Information
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {fields.map((field, index) => {
+                  // Skip contractor experience table - handled in Work Categories section
+                  if (userType.toLowerCase() === "contractor" && field.name === "experience") {
+                    return null;
+                  }
+
+                  const isGradeField = field.name === "grade" || field.name === "professionalLevel";
+                  const fieldValue = typeof info[field.name] === "string" ? info[field.name] : "";
+
+                  return (
+                    <div key={index} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-sm font-medium text-gray-600">
+                          {field.label}
+                        </label>
+                        {!isEditingFields && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingFields({ ...info });
+                              setIsEditingFields(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-800 transition"
+                          >
+                            <PencilIcon className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+
+                      {isGradeField || field.name === "experience" || field.name === "yearsOfExperience" ? (
+                        // Experience field with dropdown
+                        isEditingFields ? (
+                          <select
+                            value={editingFields[field.name] ?? fieldValue ?? ""}
+                            onChange={(e) => {
+                              setEditingFields((prev) => ({
+                                ...prev,
+                                [field.name]: e.target.value,
+                              }));
+                            }}
+                            className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          >
+                            <option value="" disabled>
+                              Select {field.label.toLowerCase()}
                             </option>
-                          ))}
-                        </select>
+                            {field.options.map((opt, i) => (
+                              <option key={i} value={opt}>
+                                {opt}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <p className="text-gray-900 font-medium">
+                            {fieldValue || "Not Provided"}
+                          </p>
+                        )
                       ) : (
-                        info[field.name] || "Not Provided"
+                        // Skill/Specialization fields
+                        isEditingFields ? (
+                          <select
+                            value={editingFields[field.name] ?? fieldValue ?? ""}
+                            onChange={(e) => {
+                              setEditingFields((prev) => ({
+                                ...prev,
+                                [field.name]: e.target.value,
+                              }));
+                            }}
+                            className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          >
+                            <option value="" disabled>
+                              Select {field.label.toLowerCase()}
+                            </option>
+                            {field.options.map((opt, i) => (
+                              <option key={i} value={opt}>
+                                {opt}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <p className="text-gray-900 font-medium">
+                            {fieldValue || "Not Provided"}
+                          </p>
+                        )
                       )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
+
               {isEditingFields && (
-                <div className="mt-4 flex justify-end gap-2">
+                <div className="mt-6 flex flex-col sm:flex-row justify-end gap-3">
                   <button
                     type="button"
-                    className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={() => {
-                      handleEditSkill(editingFields);
-                    }}
-                    disabled={isSavingInfo}
-                  >
-                    {isSavingInfo ? "Saving..." : "Save"}
-                  </button>
-                  <button
-                    type="button"
-                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium disabled:opacity-50"
                     onClick={() => setIsEditingFields(false)}
                     disabled={isSavingInfo}
                   >
                     Cancel
                   </button>
+                  <button
+                    type="button"
+                    className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => {
+                      handleEditSkill(editingFields);
+                    }}
+                    disabled={isSavingInfo}
+                  >
+                    {isSavingInfo ? "Saving..." : "Save Changes"}
+                  </button>
                 </div>
               )}
             </div>
+
+            {/* Contractor Categories Section */}
+            {userType === "CONTRACTOR" && (
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Work Categories
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={addCategory}
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+                  >
+                    <PlusIcon className="w-4 h-4" />
+                    Add Category
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {categories.map((cat, index) => (
+                    <div key={index} className="bg-white p-4 rounded-lg border border-gray-200 relative">
+                      {categories.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeCategory(index)}
+                          className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                          title="Remove category"
+                        >
+                          <XMarkIcon className="w-5 h-5" />
+                        </button>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/* Category */}
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Category
+                          </label>
+                          <select
+                            value={cat.category}
+                            onChange={(e) => {
+                              const newCategory = e.target.value;
+                              const updated = [...categories];
+                              updated[index].category = newCategory;
+                              updated[index].specialization = ""; // Reset specialization when category changes
+                              setCategories(updated);
+
+                              // Auto-add a project row for this category if not already exists
+                              if (newCategory) {
+                                const projectExists = attachments.some(
+                                  (att) => att.projectName?.toLowerCase().includes(newCategory.toLowerCase())
+                                );
+                                if (!projectExists) {
+                                  const newProject = {
+                                    id: attachments.length + 1,
+                                    projectName: `${newCategory} Project`,
+                                    files: [],
+                                    category: newCategory,
+                                  };
+                                  setAttachments([...attachments, newProject]);
+                                  toast.info(`Project row added for ${newCategory}`);
+                                }
+                              }
+                            }}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                          >
+                            <option value="">Select category</option>
+                            {Object.keys(CONTRACTOR_SPECIALIZATIONS).map((cat, i) => (
+                              <option key={i} value={cat}>{cat}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Specialization */}
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Specialization
+                          </label>
+                          <select
+                            value={cat.specialization}
+                            onChange={(e) => {
+                              const updated = [...categories];
+                              updated[index].specialization = e.target.value;
+                              setCategories(updated);
+                            }}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                            disabled={!cat.category}
+                          >
+                            <option value="">Select specialization</option>
+                            {(CONTRACTOR_SPECIALIZATIONS[cat.category as keyof typeof CONTRACTOR_SPECIALIZATIONS] || []).map((spec, i) => (
+                              <option key={i} value={spec}>{spec}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Class */}
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            NCA Class
+                          </label>
+                          <select
+                            value={cat.class}
+                            onChange={(e) => {
+                              const updated = [...categories];
+                              updated[index].class = e.target.value;
+                              setCategories(updated);
+                            }}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                          >
+                            <option value="">Select class</option>
+                            {["NCA1", "NCA2", "NCA3", "NCA4", "NCA5", "NCA6", "NCA7", "NCA8"].map((c, i) => (
+                              <option key={i} value={c}>{c}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Years of Experience */}
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Years of Experience
+                          </label>
+                          <select
+                            value={cat.years}
+                            onChange={(e) => {
+                              const updated = [...categories];
+                              updated[index].years = e.target.value;
+                              setCategories(updated);
+                            }}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                          >
+                            <option value="">Select experience</option>
+                            {["10+ years", "7-10 years", "5-7 years", "3-5 years", "1-3 years", "Less than 1 year"].map((y, i) => (
+                              <option key={i} value={y}>{y}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Category info hint */}
+                      {cat.category && (
+                        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-sm text-blue-700">
+                            <span className="font-medium">Note:</span> For {cat.category}, the following documents will be required in Account Uploads:
+                          </p>
+                          <ul className="mt-2 text-sm text-blue-600 list-disc list-inside">
+                            <li>{cat.category} Certificate</li>
+                            <li>{cat.category} Practice License</li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Save Categories Button */}
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Filter valid categories and save
+                      const validCategories = categories.filter(c => c.category && c.class && c.years);
+                      if (validCategories.length === 0) {
+                        toast.error("Please fill in at least one category with all required fields");
+                        return;
+                      }
+
+                      // Save to localStorage for Account Uploads to pick up
+                      const contractorExperiences = validCategories.map(c => ({
+                        category: c.category,
+                        specialization: c.specialization,
+                        categoryClass: c.class,
+                        yearsOfExperience: c.years,
+                      }));
+
+                      const profile = userData?.userProfile || {};
+                      const updatedProfile = {
+                        ...profile,
+                        contractorExperiences,
+                        contractorCategories: validCategories, // Store categories for document generation
+                      };
+                      userData.userProfile = updatedProfile;
+                      updateUserInLocalStorage(userData.id, { userProfile: updatedProfile });
+
+                      toast.success("Categories saved successfully!");
+                    }}
+                    className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
+                  >
+                    Save Categories
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* {userType} Project Attachments */}
             <div className="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
@@ -1800,38 +2057,82 @@ const removeCategory = (index: number) => {
             {userType.toLowerCase() === "fundi" &&
               !userData?.userProfile?.fundiEvaluation && (
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
-                  <h2 className="text-xl font-semibold mb-6 text-gray-800">
-                    Evaluation Form
-                  </h2>
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl font-semibold text-gray-800">
+                        Evaluation Form
+                      </h2>
+                      {(userData?.userProfile?.skill || userData?.skills) && (
+                        <p className="text-sm text-gray-500 mt-1">
+                          Questions for: <span className="font-medium text-blue-600">{userData?.userProfile?.skill || userData?.skills}</span>
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={addNewQuestion}
+                        className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
+                      >
+                        <PlusIcon className="w-4 h-4" />
+                        Add Question
+                      </button>
+                      {(userData?.userProfile?.skill || userData?.skills) && (
+                        <button
+                          type="button"
+                          onClick={() => saveQuestionsTemplate(userData?.userProfile?.skill || userData?.skills, questions)}
+                          className="flex items-center gap-1 px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+                        >
+                          Save as Template
+                        </button>
+                      )}
+                    </div>
+                  </div>
 
                   {/* Replacing inner <form> with <div> */}
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {questions.map((q) => (
-                        <div key={q.id} className="space-y-2 relative">
+                        <div key={q.id} className="space-y-2 relative bg-white p-4 rounded-lg border border-gray-200">
                           {q.isEditing ? (
-                            <input
-                              value={q.text}
-                              onChange={(e) =>
-                                handleQuestionEdit(q.id, e.target.value)
-                              }
-                              onBlur={(e) =>
-                                handleQuestionEdit(q.id, e.target.value)
-                              }
-                              className="w-full text-sm p-2 border border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900"
-                            />
+                            <div className="flex items-center gap-2">
+                              <input
+                                value={q.text}
+                                onChange={(e) =>
+                                  handleQuestionEdit(q.id, e.target.value)
+                                }
+                                onBlur={(e) =>
+                                  handleQuestionEdit(q.id, e.target.value)
+                                }
+                                onKeyDown={(e) => e.stopPropagation()}
+                                className="flex-1 text-sm p-2 border border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900"
+                                placeholder="Type your question here..."
+                                autoFocus
+                              />
+                            </div>
                           ) : (
                             <>
-                              <label className="block text-sm font-medium text-gray-700 pr-8">
+                              <label className="block text-sm font-medium text-gray-700 pr-16">
                                 {q.text}
                               </label>
-                              <button
-                                type="button"
-                                className="absolute top-1 right-1 text-gray-400 hover:text-gray-600"
-                                onClick={() => handleEditToggle(q.id)}
-                              >
-                                <PencilIcon className="w-4 h-4" />
-                              </button>
+                              <div className="absolute top-3 right-3 flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  className="p-1 text-gray-400 hover:text-blue-600 transition"
+                                  onClick={() => handleEditToggle(q.id)}
+                                  title="Edit question"
+                                >
+                                  <PencilIcon className="w-4 h-4" />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="p-1 text-gray-400 hover:text-red-600 transition"
+                                  onClick={() => deleteQuestion(q.id)}
+                                  title="Delete question"
+                                >
+                                  <XMarkIcon className="w-4 h-4" />
+                                </button>
+                              </div>
                             </>
                           )}
 
@@ -1843,7 +2144,8 @@ const removeCategory = (index: number) => {
                               }
                               className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-900 focus:border-blue-900"
                             >
-                              {q.options.map((opt, i) => (
+                              <option value="" disabled>Select an option</option>
+                              {q.options?.map((opt, i) => (
                                 <option key={i} value={opt}>
                                   {opt}
                                 </option>
@@ -1856,6 +2158,7 @@ const removeCategory = (index: number) => {
                               onChange={(e) =>
                                 handleTextChange(q.id, e.target.value)
                               }
+                              onKeyDown={(e) => e.stopPropagation()}
                               className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-900 focus:border-blue-900"
                               placeholder="Enter your response..."
                             />
@@ -1936,11 +2239,11 @@ const removeCategory = (index: number) => {
                       )}
                     </div>
 
-                    <div className="mt-6 text-right flex flex-col items-end gap-2">
+                    <div className="mt-6 flex flex-col sm:flex-row sm:justify-end items-stretch sm:items-center gap-2">
                       {
                         <button
                           type="submit"
-                          className="bg-blue-800 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-60"
+                          className="w-full sm:w-auto bg-blue-800 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-60 font-medium"
                           disabled={isSubmitting}
                         >
                           {isSubmitting ? "Submitting..." : "Submit Evaluation"}
@@ -2212,59 +2515,6 @@ const removeCategory = (index: number) => {
               </div>
             )}
 
-            <div className="mt-6 text-right">
-              <div className="relative inline-block">
-                {/* Show Verify Button only if not admin approved, profile is complete, and status allows verification */}
-                {!userData?.adminApproved &&
-                  !userData?.approved &&
-                  userData?.userProfile?.complete &&
-                  PREFILL_STATUSES.includes(status) && (
-                    <button
-                      type="button"
-                      onClick={handleVerify}
-                      className="bg-blue-800 text-white px-6 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={isVerifying}
-                    >
-                      {isVerifying ? "Verifying..." : "Verify"}
-                    </button>
-                  )}
-
-                {/* Show message for incomplete accounts */}
-                {(status === "SIGNED_UP" || status === "INCOMPLETE") && (
-                  <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-                    Account incomplete - Cannot verify
-                  </span>
-                )}
-
-                {/* Show Verified Badge if admin approved */}
-                {userData?.adminApproved && (
-                  <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">
-                    ✅ Verified
-                  </span>
-                )}
-
-                {/* Legacy verification status (keep for backward compatibility) */}
-                {!userData?.adminApproved && userData?.approved && (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 ml-4">
-                    Verified
-                  </span>
-                )}
-
-                {/* Verified Message */}
-                {showVerificationMessage && (
-                  <div className="absolute top-full right-0 mt-2 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50 flex items-center justify-between gap-4 min-w-[200px]">
-                    <span>Verified</span>
-                    <button
-                      type="button"
-                      onClick={handleClose}
-                      className="text-sm underline hover:text-gray-100"
-                    >
-                      Close
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
           </form>
         </div>
       </div>
