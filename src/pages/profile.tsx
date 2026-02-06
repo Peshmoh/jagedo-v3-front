@@ -164,7 +164,7 @@ function ProfilePage() {
                     <header className="sticky top-0 z-30 w-full bg-white py-4 shadow-sm px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between">
                             {/* Welcome Message */}
-                            <h1 className="text-xl font-bold text-gray-800 sm:text-2xl md:text-3xl truncate">
+                            <h1 className="text-xl font-bold pl-4 text-gray-800 sm:text-2xl md:text-3xl truncate">
                                 Welcome, {user?.organizationName || user?.firstName || user?.contactFullName || "User"}!
                             </h1>
 
