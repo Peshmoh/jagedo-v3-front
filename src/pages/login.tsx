@@ -1,34 +1,22 @@
 /* eslint-disable */
 // @ts-nocheck
-
 import React, { useState, useEffect } from "react";
-
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { loginUser, verifyOtpLogin, phoneLogin } from "@/api/auth.api";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import GoogleSignIn from "@/components/GoogleSignIn";
-import { MOCK_USERS } from "@/pages/mockusers"; // Make sure path is correct
-import { MOCK_PROFILES } from "@/pages/mockProfiles";
 
-
-
-/* =====================
-   VALIDATORS
-===================== */
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 const isValidPhone = (phone) => /^\d{10}$/.test(phone);
 
-/* =====================
-   UI COMPONENTS
-===================== */
+
 const Button = ({ children, disabled, ...props }) => (
   <button
     disabled={disabled}
-    className={`w-full h-12 rounded-lg bg-[#00007a] text-white font-medium ${
-      disabled ? "opacity-50" : "hover:bg-[#00007a]/90"
-    }`}
+    className={`w-full h-12 rounded-lg bg-[#00007a] text-white font-medium ${disabled ? "opacity-50" : "hover:bg-[#00007a]/90"
+      }`}
     {...props}
   >
     {children}
@@ -42,9 +30,7 @@ const Input = (props) => (
   />
 );
 
-/* =====================
-   MAIN COMPONENT
-===================== */
+
 export default function Login() {
   const navigate = useNavigate();
   const { setUser, setIsLoggedIn } = useGlobalContext();
@@ -65,32 +51,30 @@ export default function Login() {
 
   const [errors, setErrors] = useState({});
   useEffect(() => {
-  if (!otpSent) return;
-  if (otpTimer === 0) return;
+    if (!otpSent) return;
+    if (otpTimer === 0) return;
 
-  const interval = setInterval(() => {
-    setOtpTimer((prev) => prev - 1);
-  }, 1000);
+    const interval = setInterval(() => {
+      setOtpTimer((prev) => prev - 1);
+    }, 1000);
 
-  return () => clearInterval(interval);
-}, [otpSent, otpTimer]);
+    return () => clearInterval(interval);
+  }, [otpSent, otpTimer]);
 
 
-  /* =====================
-     VALIDATION
-  ===================== */
+
   const validateForm = () => {
     const errs = {};
     const phone = formData.email.replace(/\D/g, "");
     const email = formData.email.trim();
 
     if (!formData.email) {
-      errs.email = "Phone number or email is required";
+      errs.email = isOtpFlow ? "Phone number is required" : "Phone number or email is required";
     }
 
     if (isOtpFlow) {
-      if (!isValidPhone(phone) && !isValidEmail(email)) {
-        errs.email = "Enter a valid phone number or email";
+      if (!isValidPhone(phone)) {
+        errs.email = "Enter a valid 10-digit phone number";
       }
       if (otpSent && !/^\d{6}$/.test(otp)) {
         errs.otp = "OTP must be 6 digits";
@@ -105,125 +89,81 @@ export default function Login() {
     return Object.keys(errs).length === 0;
   };
 
-  /* =====================
-     SUBMIT HANDLER
-  ===================== */
-//   const handleSubmit = (e) => {
-//   e.preventDefault();
-//   if (!validateForm()) return;
 
-//   setIsLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-//   setTimeout(() => {
-//     const username = formData.email.trim();
-//     const password = formData.password;
+    if (!validateForm()) return;
 
-//     completeLogin(username, password);
-//     setIsLoading(false);
-//   }, 800);
-// };
+    if (isOtpFlow) {
 
-const handleSubmit = (e) => {
-  e.preventDefault();
 
-  if (!validateForm()) return;
+      if (!otpSent) {
+        setIsLoading(true);
+        try {
+          const phoneNumber = formData.email.replace(/\D/g, "");
 
-  // =====================
-  // OTP LOGIN FLOW
-  // =====================
-  if (isOtpFlow) {
 
-    // STEP 1: SEND OTP
-    if (!otpSent) {
-  setOtpSent(true);      // show OTP input
-  setOtpTimer(120);      // start 2-minute timer
-  toast.success("OTP sent");
-  return;
-}
+          await phoneLogin({ phoneNumber });
 
-    // STEP 2: VERIFY OTP
-    if (otp.length !== 6) {
-      toast.error("Enter 6-digit OTP");
+          setOtpSent(true);
+          setOtpTimer(120);
+          toast.success("OTP sent to your phone");
+        } catch (error) {
+          console.error("Phone login error:", error);
+          toast.error(error?.response?.data?.message || "Failed to send OTP");
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
+
+
+      if (otp.length !== 6) {
+        toast.error("Enter 6-digit OTP");
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const phoneNumber = formData.email.replace(/\D/g, "");
+
+        const response = await verifyOtpLogin({ phoneNumber, otp });
+
+        completeLoginWithApiResponse(response);
+      } catch (error) {
+        console.error("OTP verification error:", error);
+        toast.error(error?.response?.data?.message || "Invalid OTP");
+        setIsLoading(false);
+      }
       return;
     }
 
-    // OTP is correct (mock)
-    // OTP verified (mock)
 
-// 1. Find user by email / username
-const username = formData.email.trim();
 
-const user = MOCK_USERS.find(
-  (u) => u.username === username
-);
 
-if (!user) {
-  toast.error("User not found");
-  return;
-}
+    setIsLoading(true);
+    try {
+      const username = formData.email.trim();
+      const password = formData.password;
 
-// 2. Login using real user data
-completeLogin(user.username, user.password);
-return;
 
-  }
+      const response = await loginUser({
+        username,
+        password,
+        firebaseToken: ""
+      });
 
-  // =====================
-  // PASSWORD LOGIN FLOW
-  // =====================
-  setIsLoading(true);
-  setTimeout(() => {
-    completeLogin(
-      formData.email.trim(),
-      formData.password
-    );
-    setIsLoading(false);
-  }, 800);
-};
 
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     if (!validateForm()) return;
+      completeLoginWithApiResponse(response);
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error?.response?.data?.message || "Invalid credentials");
+      setIsLoading(false);
+    }
+  };
 
-//     setIsLoading(true);
 
-//     setTimeout(() => {
-//       const phone = formData.email.replace(/\D/g, "");
-//       const email = formData.email.trim();
-
-//       if (isOtpFlow) {
-//         if (!otpSent) {
-//           setOtpSent(true);
-//           toast.success("OTP sent successfully");
-//           setIsLoading(false);
-//           return;
-//         }
-
-//         const mockUser = {
-//           userType: "customer",
-//           phone: isValidPhone(phone) ? phone : null,
-//           email: isValidEmail(email) ? email : null,
-//           name: "Mock OTP User",
-//           authType: "otp",
-//         };
-
-//         completeLogin(mockUser);
-//       } else {
-//         const mockUser = {
-//           userType: "customer",
-//           email,
-//           name: "Mock Password User",
-//           authType: "password",
-//         };
-
-//         completeLogin(mockUser);
-//       }
-//     }, 800);
-//   };
-
-  /* =====================
-     GOOGLE LOGIN HANDLER
-  ===================== */
   const handleGoogleSuccess = (googleUser) => {
     setIsGoogleLoading(true);
 
@@ -252,117 +192,94 @@ return;
     }, 800);
   };
 
-  /* =====================
-     COMPLETE LOGIN
-  ===================== */
-//   const completeLogin = (user) => {
-//     localStorage.setItem("user", JSON.stringify(user));
-//     localStorage.setItem("token", "mock-token");
+  const completeLogin = (username, password) => {
+    const user = MOCK_USERS.find(
+      (u) => u.username === username && u.password === password
+    );
 
-//     setUser(user);
-//     setIsLoggedIn(true);
+    if (!user) {
+      toast.error("Invalid credentials");
+      return;
+    }
 
-//     toast.success("Login successful!");
-//     redirectUser(user.userType);
-//   };
-// const completeLogin = (username, password) => {
-//   const user = MOCK_USERS.find(
-//     (u) => u.username === username && u.password === password
-//   );
+    const key = username.split("@")[0];
+    const profile = MOCK_PROFILES[key];
 
-//   if (!user) {
-//     toast.error("Invalid credentials");
-//     setIsLoading(false);
-//     return;
-//   }
+    localStorage.setItem("user", JSON.stringify(user));
+    if (profile) {
+      localStorage.setItem("profile", JSON.stringify(profile));
+    }
+    localStorage.setItem("token", "mock-token");
 
-//   // Store user in localStorage
-//   localStorage.setItem("user", JSON.stringify(user));
-//   localStorage.setItem("token", "mock-token");
+    setUser({ ...user, profile });
+    setIsLoggedIn(true);
 
-//   setUser(user);
-//   setIsLoggedIn(true);
+    redirectUser(user);
+  };
 
-//   toast.success("Login successful!");
 
-//   // Redirect based on userType
-// //   redirectUser(user);
-// navigate("/profile");
-// };
+  const completeLoginWithApiResponse = (response) => {
+    const { user, accessToken } = response;
 
-const completeLogin = (username, password) => {
-  const user = MOCK_USERS.find(
-    (u) => u.username === username && u.password === password
-  );
+    if (!user || !accessToken) {
+      toast.error("Invalid response from server");
+      setIsLoading(false);
+      return;
+    }
 
-  if (!user) {
-    toast.error("Invalid credentials");
-    return;
-  }
 
-  const key = username.split("@")[0]; 
-  const profile = MOCK_PROFILES[key];
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", accessToken);
 
-  localStorage.setItem("user", JSON.stringify(user));
-  if (profile) {
-    localStorage.setItem("profile", JSON.stringify(profile));
-  }
-  localStorage.setItem("token", "mock-token"); // 🔥 REQUIRED
 
-  setUser({ ...user, profile });
-  setIsLoggedIn(true);
+    setUser(user);
+    setIsLoggedIn(true);
 
-  redirectUser(user);
-};
+    toast.success("Login successful!");
 
-  /* =====================
-     REDIRECT
-  ===================== */
-//   const redirectUser = () => {
-//     setTimeout(() => {
-//       navigate("/dashboard/customer");
-//     }, 800);
-//   };
-const redirectUser = (user) => {
-  const role = user.userType.toLowerCase(); // 🔥 THIS LINE
 
-  let path = "/dashboard/customer";
+    redirectUser(user);
+  };
 
-  switch (role) {
-   case "admin":
-  path = "/dashboard/admin";
-  break;
+  const redirectUser = (user) => {
+    const role = user.userType.toLowerCase();
 
-    case "customer":
-      path =
-        user.profileType === "organization"
-          ? "/dashboard/customer/organization"
-          : "/dashboard/customer";
-      break;
+    let path = "/dashboard/customer";
 
-    case "fundi":
-      path = "/dashboard/fundi";
-      break;
+    switch (role) {
+      case "admin":
+        path = "/dashboard/admin";
+        break;
 
-    case "professional":
-      path = "/dashboard/professional";
-      break;
+      case "customer":
+        path =
+          user.profileType === "organization"
+            ? "/dashboard/customer/organization"
+            : "/dashboard/customer";
+        break;
 
-    case "contractor":
-      path = "/dashboard/contractor";
-      break;
+      case "fundi":
+        path = "/dashboard/fundi";
+        break;
 
-    case "hardware":
-      path = "/dashboard/hardware";
-      break;
+      case "professional":
+        path = "/dashboard/professional";
+        break;
 
-    default:
-      path = "/dashboard";
-  }
+      case "contractor":
+        path = "/dashboard/contractor";
+        break;
 
-  navigate(path);
-};
+      case "hardware":
+        path = "/dashboard/hardware";
+        break;
 
+      default:
+        path = "/dashboard";
+    }
+
+    navigate(path);
+  };
 
 
   const toggleOtpFlow = () => {
@@ -373,9 +290,6 @@ const redirectUser = (user) => {
     setFormData({ email: "", password: "" });
   };
 
-  /* =====================
-     UI
-  ===================== */
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       <Toaster position="top-center" richColors />
@@ -389,13 +303,13 @@ const redirectUser = (user) => {
 
         <p className="text-gray-600 mb-6 text-center">
           {isOtpFlow
-            ? "Enter your phone number or email to receive OTP"
+            ? "Enter your phone number to receive OTP"
             : "What is your phone number or email?"}
         </p>
 
         <form className="space-y-5 w-full" onSubmit={handleSubmit}>
           <Input
-            placeholder="Phone number or email"
+            placeholder={isOtpFlow ? "Phone number" : "Phone number or email"}
             value={formData.email}
             disabled={isOtpFlow && otpSent}
             onChange={(e) =>
@@ -420,26 +334,33 @@ const redirectUser = (user) => {
               )}
             </>
           )}
-{isOtpFlow && otpSent && otpTimer > 0 && (
-  <p className="text-sm text-gray-500">
-    Didn’t receive OTP? You can resend in{" "}
-    {Math.floor(otpTimer / 60)}:
-    {(otpTimer % 60).toString().padStart(2, "0")}
-  </p>
-)}
-{isOtpFlow && otpSent && otpTimer === 0 && (
-  <button
-    type="button"
-    className="text-blue-600 text-sm"
-    onClick={() => {
-      setOtp("");
-      setOtpTimer(120); // restart wait time
-      toast.success("OTP resent");
-    }}
-  >
-    Resend OTP
-  </button>
-)}
+          {isOtpFlow && otpSent && otpTimer > 0 && (
+            <p className="text-sm text-gray-500">
+              Didn’t receive OTP? You can resend in{" "}
+              {Math.floor(otpTimer / 60)}:
+              {(otpTimer % 60).toString().padStart(2, "0")}
+            </p>
+          )}
+          {isOtpFlow && otpSent && otpTimer === 0 && (
+            <button
+              type="button"
+              className="text-blue-600 text-sm"
+              onClick={async () => {
+                try {
+                  const phoneNumber = formData.email.replace(/\D/g, "");
+                  await phoneLogin({ phoneNumber });
+                  setOtp("");
+                  setOtpTimer(120);
+                  toast.success("OTP resent successfully");
+                } catch (error) {
+                  console.error("Resend OTP error:", error);
+                  toast.error(error?.response?.data?.message || "Failed to resend OTP");
+                }
+              }}
+            >
+              Resend OTP
+            </button>
+          )}
 
 
 
