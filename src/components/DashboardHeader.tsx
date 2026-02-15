@@ -108,10 +108,10 @@ const NavComponent = ({ notifications, unreadCount, onNotificationClick, onViewA
   )
 }
 
-const CustomerNav = ({ totalItems, notifications, unreadCount, onNotificationClick, onViewAllNotifications }) => {
+const CustomerNav = ({ totalItems, notifications, unreadCount, onNotificationClick, onViewAllNotifications, isGuest }) => {
   return (
     <div className="flex items-center gap-1">
-      <NavComponent notifications={notifications} unreadCount={unreadCount} onNotificationClick={onNotificationClick} onViewAllNotifications={onViewAllNotifications} />
+      {!isGuest && <NavComponent notifications={notifications} unreadCount={unreadCount} onNotificationClick={onNotificationClick} onViewAllNotifications={onViewAllNotifications} />}
       <Link to="/customer/cart" className="group">
         <Button
           variant="ghost"
@@ -126,17 +126,19 @@ const CustomerNav = ({ totalItems, notifications, unreadCount, onNotificationCli
           )}
         </Button>
       </Link>
-      <Link to="/customer/receipts" className="group">
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100/80 transition-all duration-200 hover:scale-[1.02] rounded-lg"
-        >
-          <DocumentIcon className="h-5 w-5 text-gray-600 group-hover:text-gray-800 transition-colors duration-200" />
-          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
-            Receipts
-          </span>
-        </Button>
-      </Link>
+      {!isGuest && (
+        <Link to="/customer/receipts" className="group">
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100/80 transition-all duration-200 hover:scale-[1.02] rounded-lg"
+          >
+            <DocumentIcon className="h-5 w-5 text-gray-600 group-hover:text-gray-800 transition-colors duration-200" />
+            <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors duration-200">
+              Receipts
+            </span>
+          </Button>
+        </Link>
+      )}
       <Link to="https://jagedoplatform.zohodesk.com/portal/en/newticket" target="_blank" className="group">
         <Button
           variant="ghost"
@@ -346,39 +348,46 @@ export function DashboardHeader() {
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button type="button" className="relative h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a63e]">
-                  <Avatar src={profileImage || user?.avatarUrl || "/images/customer-1.jpeg"} alt="User avatar" className="h-10 w-10" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-white">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate("/profile")}>
-                  <UserCircleIcon className="mr-2 h-4 w-4" />
-                  <span>My Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer text-red-600" onClick={logout}>
-                  <ArrowRightOnRectangleIcon className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {!user ? (
+              <Button variant="ghost" className="text-sm font-medium text-gray-700" onClick={() => navigate("/login")}>
+                Login
+              </Button>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button type="button" className="relative h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a63e]">
+                    <Avatar src={profileImage || user?.avatarUrl || "/images/customer-1.jpeg"} alt="User avatar" className="h-10 w-10" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-white">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => navigate("/profile")}>
+                    <UserCircleIcon className="mr-2 h-4 w-4" />
+                    <span>My Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer text-red-600" onClick={logout}>
+                    <ArrowRightOnRectangleIcon className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <button className="p-2 rounded-md hover:bg-gray-100" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               <Bars3Icon className="h-6 w-6" />
             </button>
           </div>
 
           <nav className="hidden md:flex items-center space-x-2">
-            {userType === 'customer' &&
+            {(userType === 'customer' || !user) &&
               <CustomerNav
                 totalItems={totalItems}
                 notifications={notifications}
                 unreadCount={unreadCount}
                 onNotificationClick={handleNotificationClick}
                 onViewAllNotifications={handleViewAllNotifications}
+                isGuest={!user}
               />
             }
 
@@ -391,26 +400,32 @@ export function DashboardHeader() {
               />
             }
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button type="button" className="relative h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a63e]">
-                  <Avatar src={profileImage || user?.avatarUrl || "/images/customer-1.jpeg"} alt="User avatar" className="h-10 w-10" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-white">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate("/profile")}>
-                  <UserCircleIcon className="mr-2 h-4 w-4" />
-                  <span>My Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer text-red-600" onClick={logout}>
-                  <ArrowRightOnRectangleIcon className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {!user ? (
+              <Button variant="default" className="bg-[#00007a] hover:bg-[#00007a]/90 text-white rounded-full px-6" onClick={() => navigate("/login")}>
+                Login
+              </Button>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button type="button" className="relative h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a63e]">
+                    <Avatar src={profileImage || user?.avatarUrl || "/images/customer-1.jpeg"} alt="User avatar" className="h-10 w-10" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-white">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => navigate("/profile")}>
+                    <UserCircleIcon className="mr-2 h-4 w-4" />
+                    <span>My Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer text-red-600" onClick={logout}>
+                    <ArrowRightOnRectangleIcon className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </nav>
         </div>
       </div>
@@ -418,20 +433,34 @@ export function DashboardHeader() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t p-4 animate-fade-in-down">
           <div className="flex flex-col space-y-2">
-            {userType === 'customer' && (
+            {(userType === 'customer' || !user) && (
               <>
-                <Link to="/notifications" className="flex items-center gap-2 p-2 rounded hover:bg-gray-100">
-                  <BellIcon className="h-5 w-5" /> Notifications
-                </Link>
+                {!user && (
+                  <Link to="/login" className="flex items-center gap-2 p-2 rounded hover:bg-gray-100 font-medium text-blue-700">
+                    <UserCircleIcon className="h-5 w-5" /> Login
+                  </Link>
+                )}
                 <Link to="/customer/cart" className="flex items-center gap-2 p-2 rounded hover:bg-gray-100">
                   <ShoppingCartIcon className="h-5 w-5" /> Cart
                 </Link>
-                <Link to="/customer/receipts" className="flex items-center gap-2 p-2 rounded hover:bg-gray-100">
-                  <DocumentIcon className="h-5 w-5" /> Receipts
-                </Link>
-                <div className="flex items-center gap-2 p-2 rounded hover:bg-gray-100" onClick={() => window.open("https://jagedoplatform.zohodesk.com/portal/en/newticket", "_blank")}>
-                  <QuestionMarkCircleIcon className="h-5 w-5" /> Help
-                </div>
+                {!user && (
+                  <div className="flex items-center gap-2 p-2 rounded hover:bg-gray-100" onClick={() => window.open("https://jagedoplatform.zohodesk.com/portal/en/newticket", "_blank")}>
+                    <QuestionMarkCircleIcon className="h-5 w-5" /> Help
+                  </div>
+                )}
+                {user && (
+                  <>
+                    <Link to="/notifications" className="flex items-center gap-2 p-2 rounded hover:bg-gray-100">
+                      <BellIcon className="h-5 w-5" /> Notifications
+                    </Link>
+                    <Link to="/customer/receipts" className="flex items-center gap-2 p-2 rounded hover:bg-gray-100">
+                      <DocumentIcon className="h-5 w-5" /> Receipts
+                    </Link>
+                    <div className="flex items-center gap-2 p-2 rounded hover:bg-gray-100" onClick={() => window.open("https://jagedoplatform.zohodesk.com/portal/en/newticket", "_blank")}>
+                      <QuestionMarkCircleIcon className="h-5 w-5" /> Help
+                    </div>
+                  </>
+                )}
               </>
             )}
             {serviceProviderTypes.includes(userType) && (

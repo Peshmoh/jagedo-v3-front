@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Product } from "@/hooks/useProducts";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
+import { useGlobalContext } from "@/context/GlobalProvider";
+import { toast } from "react-hot-toast";
 
 interface ProductCardProps {
   product: Product;
@@ -14,9 +16,26 @@ interface ProductCardProps {
 const ProductCard = ({ product, onProductClick, onAddToCart, onBuyNow, isDetailView = false }: ProductCardProps) => {
   const [mainImage, setMainImage] = useState(product.images?.[0]);
 
+  const { isLoggedIn } = useGlobalContext();
+
   const handleAddToCartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!isLoggedIn) {
+      toast.error("Please log in first to add products to your cart.");
+      return;
+    }
     onAddToCart();
+  };
+
+  const handleBuyNowClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isLoggedIn) {
+      toast.error("Please log in first to buy products.");
+      return;
+    }
+    if (onBuyNow) {
+      onBuyNow(product);
+    }
   };
 
   // DETAIL VIEW
@@ -73,7 +92,7 @@ const ProductCard = ({ product, onProductClick, onAddToCart, onBuyNow, isDetailV
               </button>
               {onBuyNow && (
                 <button
-                  onClick={() => onBuyNow(product)}
+                  onClick={handleBuyNowClick}
                   className="flex-1 bg-green-500 hover:bg-gray-300 text-gray-900 font-semibold py-2 px-4 rounded-lg transition-colors"
                 >
                   Buy Now

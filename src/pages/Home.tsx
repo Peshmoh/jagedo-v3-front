@@ -3,9 +3,9 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import {Menu,X,CheckCircleIcon, ChevronDown, User,PencilRuler,HardHat,Store,SquareUser,} from "lucide-react";
+import { Menu, X, CheckCircleIcon, ChevronDown, User, PencilRuler, HardHat, Store, SquareUser, } from "lucide-react";
 import { motion } from "framer-motion";
-import {FaFacebookF,FaXTwitter,FaLinkedinIn,FaInstagram, FaTiktok,} from "react-icons/fa6";
+import { FaFacebookF, FaXTwitter, FaLinkedinIn, FaInstagram, FaTiktok, } from "react-icons/fa6";
 import customerImg from "../assets/customer(1).png";
 import fundiImg from "../assets/fundi.jpeg";
 import professionalImg from "../assets/professional.jpeg";
@@ -241,7 +241,7 @@ const Home = () => {
     }
   };
   const handleProductsClick = () => {
-    navigate("/products");
+    navigate("/customer/hardware_shop");
   };
 
   const handleHelpClick = () => {
@@ -340,7 +340,7 @@ const Home = () => {
   const handleMenuButtonClick = (index) => {
     switch (menuButtons[index]) {
       case "Products":
-        navigate("/products");
+        navigate("/customer/hardware_shop");
         break;
       case "Help":
         window.open(
@@ -703,11 +703,10 @@ const Home = () => {
               type="button"
               key={category.name}
               onClick={() => handleCategory(category)}
-              className={`bg-[rgb(0,0,122)] w-72 sm:w-40 px-6 py-2 rounded-full my-1.5 justify-center text-white shadow-md hover:cursor-pointer hover:scale-105 hover:transition duration-700 ease-in-out transition  ${
-                selectedCategory === category.name
+              className={`bg-[rgb(0,0,122)] w-72 sm:w-40 px-6 py-2 rounded-full my-1.5 justify-center text-white shadow-md hover:cursor-pointer hover:scale-105 hover:transition duration-700 ease-in-out transition  ${selectedCategory === category.name
                   ? "bg-green-600 text-white"
                   : " hover:bg-gray-400"
-              }`}
+                }`}
             >
               {category.name}
             </button>
@@ -780,48 +779,48 @@ const Home = () => {
 
           {/* CAROUSEL */}
           <div className="relative w-full overflow-hidden">
-  <div
-    className="flex transition-transform duration-700 ease-in-out"
-    style={{
-      transform: `translateX(-${slideIndex * (100 / VISIBLE)}%)`,
-    }}
-  >
-    {testimonials.map((item, index) => (
-      <div
-        key={index}
-        className="w-1/3 flex-shrink-0 px-3"
-      >
-        <div className="bg-white p-6 rounded-2xl shadow-lg relative h-full">
-          <div className="absolute top-4 right-4 text-gray-200 text-6xl font-serif">
-            “
-          </div>
+            <div
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{
+                transform: `translateX(-${slideIndex * (100 / VISIBLE)}%)`,
+              }}
+            >
+              {testimonials.map((item, index) => (
+                <div
+                  key={index}
+                  className="w-1/3 flex-shrink-0 px-3"
+                >
+                  <div className="bg-white p-6 rounded-2xl shadow-lg relative h-full">
+                    <div className="absolute top-4 right-4 text-gray-200 text-6xl font-serif">
+                      “
+                    </div>
 
-          <div className="flex items-center gap-4 mb-4">
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-12 h-12 rounded-full object-cover"
-            />
-            <div>
-              <h4 className="font-bold text-sm">{item.name}</h4>
-              <p className="text-[rgb(0,0,122)] text-sm">{item.role}</p>
+                    <div className="flex items-center gap-4 mb-4">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <h4 className="font-bold text-sm">{item.name}</h4>
+                        <p className="text-[rgb(0,0,122)] text-sm">{item.role}</p>
+                      </div>
+                    </div>
+
+                    <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                      "{item.text}"
+                    </p>
+
+                    <div className="flex gap-1 text-orange-400">
+                      {Array(5).fill(0).map((_, i) => (
+                        <span key={i}>★</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-
-          <p className="text-gray-600 text-sm leading-relaxed mb-4">
-            "{item.text}"
-          </p>
-
-          <div className="flex gap-1 text-orange-400">
-            {Array(5).fill(0).map((_, i) => (
-              <span key={i}>★</span>
-            ))}
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
 
         </div>
       </motion.section>
@@ -943,12 +942,12 @@ const Home = () => {
                 </a>
               ))}
             </div>
-           
+
           </div>
         </div>
         {/* Bottom Copyright Section */}
         <div className="border-t border-gray-500 mt-12 pt-6 text-center text-sm text-gray-300">
-          <p>&copy; 2025 JaGedo. All rights reserved.</p>
+          <p>&copy; 2026 JaGedo. All rights reserved.</p>
         </div>
       </motion.footer>
     </motion.div>

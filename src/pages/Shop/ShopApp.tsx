@@ -81,7 +81,7 @@ const ShopApp = () => {
         if (!products.length) {
             return [];
         }
-        
+
         const shouldApplyLocationFilter = !CATEGORIES_WITHOUT_LOCATION_FILTER.includes(activeCategory);
 
         if (shouldApplyLocationFilter && !selectedLocationName) {
@@ -89,7 +89,7 @@ const ShopApp = () => {
         }
 
         let baseProductList = products;
-        
+
         if (shouldApplyLocationFilter) {
             baseProductList = products.filter(product => product.regionName === selectedLocationName);
         }
@@ -105,15 +105,15 @@ const ShopApp = () => {
                 const matchesType = primaryCategoryFilters.some(cat =>
                     product.type.toLowerCase().includes(cat.toLowerCase())
                 );
-                
+
                 if (shouldApplyLocationFilter) {
                     return !isCustom && matchesType;
                 }
-                
+
                 return matchesType;
             });
         }
-        
+
         const activeSidebarFilters = selectedFilters.filter(f => f !== "All Products");
         if (activeSidebarFilters.length > 0) {
             return categoryFilteredProducts.filter(product =>
@@ -211,17 +211,18 @@ const ShopApp = () => {
             <DashboardHeader />
             <div className="p-4">
                 <button
-                    onClick={() => navigate('/dashboard/customer')}
+                    onClick={() => navigate(-1)}
                     className="text-jagedo-blue hover:underline flex items-center gap-1"
                 >
                     ← Back
                 </button>
+
             </div>
             <HeroSection />
             <div className="px-4">
                 <CategoryTabs activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
             </div>
-            
+
             <div className="px-4 pt-4 md:hidden">
                 <button
                     onClick={() => setIsSidebarOpen(true)}
@@ -248,7 +249,7 @@ const ShopApp = () => {
                 )}>
                     <div className="flex justify-end md:hidden mb-4">
                         <button onClick={() => setIsSidebarOpen(false)} className="p-2 -mr-2">
-                           <X className="h-6 w-6" />
+                            <X className="h-6 w-6" />
                         </button>
                     </div>
                     {!CATEGORIES_WITHOUT_LOCATION_FILTER.includes(activeCategory) && (
