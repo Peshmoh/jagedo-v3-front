@@ -270,6 +270,18 @@ function App() {
                                     path="/reset-password"
                                     element={<ResetToken />}
                                 />
+                                <Route
+                                    path="/customer/hardware_shop"
+                                    element={<ShopApp />}
+                                />
+                                <Route
+                                    path="/products"
+                                    element={<ShopApp />}
+                                />
+                                <Route
+                                    path="/customer/cart"
+                                    element={<CartPage />}
+                                />
 
                                 {/* SIGN UP ROUTES */}
                                 <Route
@@ -353,14 +365,7 @@ function App() {
                                             path="/customer/checkout"
                                             element={<CheckoutPage />}
                                         />
-                                        <Route
-                                            path="/customer/cart"
-                                            element={<CartPage />}
-                                        />
-                                        <Route
-                                            path="/customer/hardware_shop"
-                                            element={<ShopApp />}
-                                        />
+
                                         <Route
                                             path="/customer/new/job/:id"
                                             element={<CustomerNewJobRequestDetails />}
@@ -897,10 +902,10 @@ function App() {
                                                 path="shop/prices"
                                                 element={<ShopPrices />}
                                             />
-                                             <Route
-                                            path="configuration"
-                                            element={<BuilderConfiguration />}
-                                        />
+                                            <Route
+                                                path="configuration"
+                                                element={<BuilderConfiguration />}
+                                            />
                                             <Route
                                                 path="builders"
                                                 element={React.createElement(

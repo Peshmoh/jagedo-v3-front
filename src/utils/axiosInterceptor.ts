@@ -18,7 +18,7 @@ const useAxiosWithAuth = (url: any) => {
     });
 
     // Add request interceptor to include token
-    axiosInstance.interceptors.request.use(
+    axiosInstance.interceptors.request.use(     
         (config) => {
             const token = localStorage.getItem("token");
             if (token) {
@@ -35,7 +35,6 @@ const useAxiosWithAuth = (url: any) => {
         async (error) => {
             const originalRequest = error.config;
             if (error.response?.status === 401 && !originalRequest._retry) {
-                // console.log("Token expired. Refreshing token...");
                 originalRequest._retry = true;
                 const refreshToken = localStorage.getItem("refreshToken");
                 const token = localStorage.getItem("token");
