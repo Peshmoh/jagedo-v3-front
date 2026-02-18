@@ -88,7 +88,7 @@ export const resetPassword = async (data: any) => {
 
 export const verifyOtpLogin = async (data: any) => {
     const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/auth/login/verify/otp`,
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/login-with-otp`,
         data
     );
     return {...response.data, user: response.data.user};
@@ -96,20 +96,17 @@ export const verifyOtpLogin = async (data: any) => {
 
 export const phoneLogin = async (data: any) => {
     const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/auth/login/phone`,
+        `${import.meta.env.VITE_SERVER_URL}/api/auth/initiate-otp-login`,
         data
     );
     return {...response.data, user: response.data.user};
 };
 
 //initiate secondary verification 
-export const initiateSecondaryVerification = async (email: string) => {
+export const initiateSecondaryVerification = async (data: any) => {
   const response = await axios.post(
     `${import.meta.env.VITE_SERVER_URL}/api/auth/secondary-verification/initiate`,
-    null,
-    {
-      params: { email }
-    }
+    data,
   );
   return response;
 };

@@ -32,10 +32,11 @@ export function ProfileCompletion({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
 
-
     const [countries, setCountries] = useState<any[]>([]);
     const [isLoadingCountries, setIsLoadingCountries] = useState(true);
 
+
+    console.log("User: ", user);
 
     const [personalInfo, setPersonalInfo] = useState({
         firstName: user?.firstName || "",
@@ -251,7 +252,7 @@ export function ProfileCompletion({
         }
         setSecondaryContact((prev) => ({ ...prev, isLoading: true }));
         try {
-            const response = await initiateSecondaryVerification(user.email);
+            const response = await initiateSecondaryVerification({email: user.email, otpDeliveryMethod: secondaryContact.contactType, phone: user.phone});
 
             if (response.data.success) {
                 toast.success(`OTP sent to ${secondaryContact.contact}`);
