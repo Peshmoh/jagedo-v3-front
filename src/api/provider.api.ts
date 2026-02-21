@@ -258,7 +258,8 @@ export const updateProfilesPhoneNumber = async (
 export const handleVerifyUser = async (axiosInstance: any, userId: any) => {
     try {
         const response = await axiosInstance.put(
-            `${import.meta.env.VITE_SERVER_URL}/api/profiles/${userId}/approve`,
+            `${import.meta.env.VITE_SERVER_URL}/api/admin/profiles/${userId}/approve`,
+            {},
             {
                 headers: {
                     Authorization: getAuthHeaders()
@@ -514,8 +515,7 @@ export const updateBuilderLevel = async (
                     grade: editedFields.grade || userData.grade,
                     experience:
                         editedFields.experience || userData.experience,
-                    previousJobPhotoUrls: userData.previousJobPhotoUrls || [],
-                    experienceApproved: editedFields.experienceApproved ?? userData.experienceApproved
+                    previousJobPhotoUrls: userData.previousJobPhotoUrls || []
                 }
                 : userType === "PROFESSIONAL"
                     ? {
@@ -525,8 +525,7 @@ export const updateBuilderLevel = async (
                             editedFields.yearsOfExperience ||
                             userData.yearsOfExperience,
                         profession: editedFields.profession || userData.profession,
-                        specialization: editedFields.specialization || userData.specialization,
-                        experienceApproved: editedFields.experienceApproved ?? userData.experienceApproved
+                        specialization: editedFields.specialization || userData.specialization
                     }
                     : userType === "CONTRACTOR"
                         ? {
@@ -535,8 +534,7 @@ export const updateBuilderLevel = async (
                             contractorType: editedFields.category || userData.contractorType || userData.category,
                             specialization: editedFields.specialization || userData.specialization,
                             licenseLevel: editedFields.class || userData.licenseLevel || userData.class,
-                            yearsOfExperience: editedFields.yearsOfExperience || userData.yearsOfExperience,
-                            experienceApproved: editedFields.experienceApproved ?? userData.experienceApproved
+                            yearsOfExperience: editedFields.yearsOfExperience || userData.yearsOfExperience
                         }
                         : userType === "HARDWARE"
                             ? {
@@ -544,8 +542,7 @@ export const updateBuilderLevel = async (
                                 specialization: editedFields.specialization || userData.specialization,
                                 businessType: editedFields.businessType || userData.businessType,
                                 experience: editedFields.experience || userData.experience,
-                                projects: userData.hardwareProjects || userData.projects || [],
-                                experienceApproved: editedFields.experienceApproved ?? userData.experienceApproved
+                                projects: userData.hardwareProjects || userData.projects || []
                             }
                             : null;
 

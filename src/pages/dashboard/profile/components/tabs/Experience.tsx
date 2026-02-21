@@ -45,16 +45,14 @@ const FUNDI_SPECIALIZATIONS = {
     "Electrical Maintenance & Repair",
   ],
   Plumber: [
-    "Pipe Installation & Repair",
-    "Water Heater Installation",
-    "Drainage Systems",
-    "Septic Tank Installation",
-    "Bathroom Fitting",
-    "Kitchen Plumbing",
-    "Water Treatment Systems",
-    "Irrigation Systems",
-    "Gas Pipe Installation",
-    "Sewer Line Services",
+    "General Plumbing",
+    "Water Systems",
+    "Drainage & Sewer",
+    "Gas Plumbing",
+    "Bathroom Installation",
+    "Kitchen Installation",
+    "Pipe Welding",
+    "Solar Water Systems",
   ],
   Carpenter: [
     "Furniture Making",
@@ -363,10 +361,9 @@ const Experience = ({ userData }) => {
   // Statuses that should prefill/show existing data
   const PREFILL_STATUSES = ["COMPLETED", "VERIFIED", "PENDING", "RETURNED"];
 
-  // Initialize attachments based on user type
   const getInitialAttachments = () => {
-    // For SIGNED_UP or INCOMPLETE, return empty attachments
-    if (!PREFILL_STATUSES.includes(status)) {
+    // If no profile, return empty
+    if (!userData?.userProfile) {
       return [];
     }
 
@@ -506,11 +503,6 @@ const Experience = ({ userData }) => {
 
   // Initialize info from userData.userProfile based on user type
   const getInitialInfo = () => {
-    // For SIGNED_UP or INCOMPLETE, return default empty values
-    if (!PREFILL_STATUSES.includes(status)) {
-      return getDefaultInfo();
-    }
-
     if (!userData?.userProfile) {
       return getDefaultInfo();
     }
@@ -601,6 +593,8 @@ const Experience = ({ userData }) => {
     setCategories(getInitialCategories());
   }, [userData]);
   const getFieldsConfig = () => {
+    const currentData = isEditingFields ? editingFields : info;
+
     switch (userType) {
       case "FUNDI":
         return [
@@ -621,7 +615,7 @@ const Experience = ({ userData }) => {
           {
             name: "specialization",
             label: "Specialization",
-            options: FUNDI_SPECIALIZATIONS[info.skill as keyof typeof FUNDI_SPECIALIZATIONS] || [
+            options: FUNDI_SPECIALIZATIONS[currentData.skill as keyof typeof FUNDI_SPECIALIZATIONS] || [
               "Block Work & Brick Laying",
               "Plastering & Rendering",
               "Stone Masonry",
@@ -643,7 +637,7 @@ const Experience = ({ userData }) => {
           {
             name: "experience",
             label: "Experience",
-            options: ["10+ years", "5-10 years", "3-5 years", "1-3 years", "Less than 1 year"],
+            options: ["10+ years", "5-10 years", "3-5 years", "1-3 years"],
           },
         ];
 
@@ -667,7 +661,7 @@ const Experience = ({ userData }) => {
           {
             name: "specialization",
             label: "Specialization",
-            options: PROFESSIONAL_SPECIALIZATIONS[info.profession as keyof typeof PROFESSIONAL_SPECIALIZATIONS] || [
+            options: PROFESSIONAL_SPECIALIZATIONS[currentData.profession as keyof typeof PROFESSIONAL_SPECIALIZATIONS] || [
               "Residential Architecture",
               "Commercial Architecture",
               "Industrial Architecture",
@@ -705,8 +699,8 @@ const Experience = ({ userData }) => {
           {
             name: "specialization",
             label: "Specialization",
-            options: CONTRACTOR_SPECIALIZATIONS[info.category as keyof typeof CONTRACTOR_SPECIALIZATIONS] ||
-              CONTRACTOR_SPECIALIZATIONS[info.contractorType as keyof typeof CONTRACTOR_SPECIALIZATIONS] || [
+            options: CONTRACTOR_SPECIALIZATIONS[currentData.category as keyof typeof CONTRACTOR_SPECIALIZATIONS] ||
+              CONTRACTOR_SPECIALIZATIONS[currentData.contractorType as keyof typeof CONTRACTOR_SPECIALIZATIONS] || [
                 "Residential Construction",
                 "Commercial Construction",
                 "Industrial Construction",
@@ -811,7 +805,7 @@ const Experience = ({ userData }) => {
           {
             name: "experience",
             label: "Experience",
-            options: ["10+ years", "5-10 years", "3-5 years", "1-3 years", "Less than 1 year"],
+            options: ["10+ years", "5-10 years", "3-5 years", "1-3 years"],
           },
         ];
     }
@@ -852,23 +846,21 @@ const Experience = ({ userData }) => {
 
   // Get required project count based on user type and level
   const getRequiredProjectCount = () => {
+    const currentGrade = isEditingFields ? editingFields.grade : info.grade;
+    const currentLevel = isEditingFields ? editingFields.professionalLevel : info.professionalLevel;
+
     switch (userType) {
       case "FUNDI":
-        const grade = userData?.userProfile?.grade || "";
-        if (grade === "G1: Master Fundi") return 3;
-        if (grade === "G2: Skilled") return 2;
-        if (grade === "G3: Semi-skilled") return 1;
-        if (grade === "G4: Unskilled") return 0;
+        if (currentGrade === "G1: Master Fundi") return 3;
+        if (currentGrade === "G2: Skilled") return 2;
+        if (currentGrade === "G3: Semi-skilled") return 1;
+        if (currentGrade === "G4: Unskilled") return 0;
         return 0; // default for unknown grades
       case "PROFESSIONAL":
-        const level =
-          userData?.userProfile?.professionalLevel ||
-          userData?.userProfile?.level ||
-          "";
-        if (level === "Senior") return 3;
-        if (level === "Professional") return 2;
-        if (level === "Graduate") return 1;
-        if (level === "Student") return 0;
+        if (currentLevel === "Senior") return 3;
+        if (currentLevel === "Professional") return 2;
+        if (currentLevel === "Graduate") return 1;
+        if (currentLevel === "Student") return 0;
         return 0; // default for unknown levels
       case "CONTRACTOR":
         return 1; // Standard for contractors
@@ -1320,8 +1312,7 @@ const Experience = ({ userData }) => {
       essentialEquipmentScore: questions[2]?.score || 0,
       quotationFormulaScore: questions[3]?.score || 0,
       totalScore: totalScore,
-      audioUrl: audioUrl || null,
-      isVerified: true
+      audioUrl: audioUrl || null
     };
 
     try {
@@ -1376,7 +1367,7 @@ const Experience = ({ userData }) => {
               {userData?.userType} Experience
             </h1>
             <div className="flex items-center gap-3">
-              {userData?.userProfile?.experienceApproved ? (
+              {( userData?.adminApproved) ? (
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-800 border border-green-200">
                   <FiCheck className="w-4 h-4" />
                   Experience Approved
@@ -1387,12 +1378,9 @@ const Experience = ({ userData }) => {
                   onClick={async () => {
                     setIsSavingInfo(true);
                     try {
-                      await updateBuilderLevel(
+                      await handleVerifyUser(
                         axiosInstance,
-                        userData.id,
-                        userType,
-                        { experienceApproved: true },
-                        userData.userProfile
+                        userData.id
                       );
                       toast.success("Experience section has been approved!");
                       window.location.reload();
@@ -1482,10 +1470,15 @@ const Experience = ({ userData }) => {
                           <select
                             value={editingFields[field.name] ?? fieldValue ?? ""}
                             onChange={(e) => {
-                              setEditingFields((prev) => ({
-                                ...prev,
-                                [field.name]: e.target.value,
-                              }));
+                              const newValue = e.target.value;
+                              setEditingFields((prev) => {
+                                const updated = { ...prev, [field.name]: newValue };
+                                // Reset specialization if the parent field changes
+                                if (field.name === "skill" || field.name === "profession" || field.name === "category") {
+                                  updated.specialization = "";
+                                }
+                                return updated;
+                              });
                             }}
                             className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           >

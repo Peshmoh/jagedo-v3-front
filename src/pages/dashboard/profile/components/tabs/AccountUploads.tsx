@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { FiDownload, FiEye, FiUpload, FiTrash2, FiCheck, FiX, FiRefreshCw, FiChevronDown } from "react-icons/fi";
 import { FileText, Image, AlertCircle, CheckCircle, XCircle, Clock } from "lucide-react";
 import { toast, Toaster } from "sonner";
-
-import { getMockUploadsForUserType } from "@/pages/data/mockUploads";
-
-const STORAGE_KEY = "uploads_demo";
+import { adminDynamicUpdateAccountUploads } from "@/api/uploads.api";
+import { handleVerifyUser } from "@/api/provider.api";
+import useAxiosWithAuth from "@/utils/axiosInterceptor";
+import { uploadFileWithAxios } from "@/utils/fileUpload";
 
 interface DocumentItem {
   key: string;
@@ -27,52 +27,13 @@ interface UploadedDocument {
   reviewedBy?: string;
 }
 
-// Helper to update user in localStorage
-const updateUserInLocalStorage = (
-  userId: string | number,
-  updates: Record<string, any>,
-) => {
-  try {
-    // Update in "users" array
-    const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
-    const userIdx = storedUsers.findIndex((u: any) => u.id === userId || u.id === Number(userId) || u.id === String(userId));
-    if (userIdx !== -1) {
-      storedUsers[userIdx] = { ...storedUsers[userIdx], ...updates };
-      localStorage.setItem("users", JSON.stringify(storedUsers));
-    }
-
-    // Update in "builders" array
-    const storedBuilders = JSON.parse(localStorage.getItem("builders") || "[]");
-    const builderIdx = storedBuilders.findIndex((b: any) => b.id === userId || b.id === Number(userId) || b.id === String(userId));
-    if (builderIdx !== -1) {
-      storedBuilders[builderIdx] = { ...storedBuilders[builderIdx], ...updates };
-      localStorage.setItem("builders", JSON.stringify(storedBuilders));
-    }
-
-    // Update in "customers" array
-    const storedCustomers = JSON.parse(localStorage.getItem("customers") || "[]");
-    const customerIdx = storedCustomers.findIndex((c: any) => c.id === userId || c.id === Number(userId) || c.id === String(userId));
-    if (customerIdx !== -1) {
-      storedCustomers[customerIdx] = { ...storedCustomers[customerIdx], ...updates };
-      localStorage.setItem("customers", JSON.stringify(storedCustomers));
-    }
-
-    // Update single "user" key
-    const singleUser = JSON.parse(localStorage.getItem("user") || "null");
-    if (singleUser && (singleUser.id === userId || singleUser.id === Number(userId) || singleUser.id === String(userId))) {
-      localStorage.setItem("user", JSON.stringify({ ...singleUser, ...updates }));
-    }
-  } catch (err) {
-    console.error("Failed to update user in localStorage:", err);
-  }
-};
-
 interface AccountUploadsProps {
   userData: any;
   isAdmin?: boolean; // When true, shows admin actions (approve, reject, etc.)
 }
 
 const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
+  const axiosInstance = useAxiosWithAuth(import.meta.env.VITE_SERVER_URL)
   if (!userData) return <div className="p-8">Loading...</div>;
 
   const [documents, setDocuments] = useState<Record<string, UploadedDocument>>({});
@@ -94,20 +55,87 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
   const userType = userData?.userType?.toLowerCase() || "";
   const accountType = userData?.accountType?.toLowerCase() || "";
 
+  const persistDocuments = async (updatedDocs: Record<string, UploadedDocument>) => {
+    try {
+      let payload: any = {};
+      const type = userType.toLowerCase();
+
+      if (type === "fundi") {
+        payload = {
+          idFront: updatedDocs.idFront?.url || "",
+          idBack: updatedDocs.idBack?.url || "",
+          certificate: updatedDocs.certificate?.url || "",
+          kraPIN: updatedDocs.kraPIN?.url || "",
+        };
+      } else if (type === "professional") {
+        payload = {
+          idFront: updatedDocs.idFront?.url || "",
+          idBack: updatedDocs.idBack?.url || "",
+          academicCertificate: updatedDocs.academicCertificate?.url || "",
+          cvUrl: updatedDocs.cv?.url || updatedDocs.cvUrl?.url || "",
+          kraPIN: updatedDocs.kraPIN?.url || "",
+          practiceLicense: updatedDocs.practiceLicense?.url || "",
+        };
+      } else if (type === "contractor") {
+        payload = {
+          businessRegistration: updatedDocs.certificateOfIncorporation?.url || "",
+          businessPermit: updatedDocs.businessPermit?.url || "",
+          kraPIN: updatedDocs.kraPIN?.url || "",
+          companyProfile: updatedDocs.companyProfile?.url || "",
+        };
+      } else if (type === "customer") {
+        if (accountType === "individual") {
+          payload = {
+            idFrontUrl: updatedDocs.idFront?.url || "",
+            idBackUrl: updatedDocs.idBack?.url || "",
+            kraPIN: updatedDocs.kraPIN?.url || "",
+          };
+        } else {
+          payload = {
+            businessPermit: updatedDocs.businessPermit?.url || "",
+            certificateOfIncorporation: updatedDocs.certificateOfIncorporation?.url || "",
+            kraPIN: updatedDocs.kraPIN?.url || "",
+          };
+        }
+      } else if (type === "hardware") {
+        payload = {
+          certificateOfIncorporation: updatedDocs.certificateOfIncorporation?.url || "",
+          businessPermit: updatedDocs.businessPermit?.url || "",
+          kraPIN: updatedDocs.kraPIN?.url || "",
+          companyProfile: updatedDocs.companyProfile?.url || "",
+        };
+      }
+
+      await adminDynamicUpdateAccountUploads(
+        axiosInstance,
+        payload,
+        userType,
+        userData.id,
+        accountType
+      );
+    } catch (error: any) {
+      console.error("Persist error:", error);
+      throw error;
+    }
+  };
+
   /* -------------------- Load documents based on status -------------------- */
   useEffect(() => {
     // 1. Start with documents from userProfile if available
     const initialDocs: Record<string, UploadedDocument> = {};
     const profile = userData?.userProfile;
 
+    const status = userData?.adminApproved ? "approved" : "pending";
+
     if (profile) {
+      // 1. Identity & Common Documents
       if (profile.idFrontUrl) {
         initialDocs.idFront = {
           name: "National ID Front",
           url: profile.idFrontUrl,
           type: "idFront",
           uploadedAt: "Existing",
-          status: "pending",
+          status: status as DocumentStatus,
         };
       }
       if (profile.idBackUrl) {
@@ -116,7 +144,7 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           url: profile.idBackUrl,
           type: "idBack",
           uploadedAt: "Existing",
-          status: "pending",
+          status: status as DocumentStatus,
         };
       }
       if (profile.kraPIN) {
@@ -125,41 +153,108 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           url: profile.kraPIN,
           type: "kraPIN",
           uploadedAt: "Existing",
-          status: "pending",
+          status: status as DocumentStatus,
         };
       }
+
+      // 2. Fundi Specific
       if (profile.certificateUrl) {
         initialDocs.certificate = {
           name: "Trade Certificate",
           url: profile.certificateUrl,
           type: "certificate",
           uploadedAt: "Existing",
-          status: "pending",
+          status: status as DocumentStatus,
         };
       }
-    }
 
-    // 2. Load from localStorage as override/supplement
-    const saved = localStorage.getItem(`${STORAGE_KEY}_${userData.id}`);
-    if (saved) {
-      const savedDocs = JSON.parse(saved);
-      setDocuments({ ...initialDocs, ...savedDocs });
-    } else {
-      setDocuments(initialDocs);
+      // 3. Professional Specific
+      if (profile.academicCertificateUrl) {
+        initialDocs.academicCertificate = {
+          name: "Academic Certificate",
+          url: profile.academicCertificateUrl,
+          type: "academicCertificate",
+          uploadedAt: "Existing",
+          status: status as DocumentStatus,
+        };
+      }
+      if (profile.cvUrl) {
+        initialDocs.cv = {
+          name: "Curriculum Vitae (CV)",
+          url: profile.cvUrl,
+          type: "cv",
+          uploadedAt: "Existing",
+          status: status as DocumentStatus,
+        };
+      }
+      if (profile.practiceLicense) {
+        initialDocs.practiceLicense = {
+          name: "Practice License",
+          url: profile.practiceLicense,
+          type: "practiceLicense",
+          uploadedAt: "Existing",
+          status: status as DocumentStatus,
+        };
+      }
+
+      // 4. Contractor & Organization Specific
+      if (profile.businessPermit || profile.singleBusinessPermit) {
+        initialDocs.businessPermit = {
+          name: "Business Permit",
+          url: (profile.businessPermit || profile.singleBusinessPermit) as string,
+          type: "businessPermit",
+          uploadedAt: "Existing",
+          status: status as DocumentStatus,
+        };
+      }
+      // Map either businessRegistration, certificateOfIncorporation, or registrationCertificateUrl
+      const bizRegUrl = profile.businessRegistration || profile.certificateOfIncorporation || profile.registrationCertificateUrl;
+      if (bizRegUrl) {
+        initialDocs.certificateOfIncorporation = {
+          name: "Registration Document",
+          url: bizRegUrl as string,
+          type: "certificateOfIncorporation",
+          uploadedAt: "Existing",
+          status: status as DocumentStatus,
+        };
+      }
+      if (profile.companyProfile) {
+        initialDocs.companyProfile = {
+          name: "Company Profile",
+          url: profile.companyProfile,
+          type: "companyProfile",
+          uploadedAt: "Existing",
+          status: status as DocumentStatus,
+        };
+      }
+      if (profile.ncaCertificate || profile.ncaRegCardUrl) {
+        initialDocs.ncaCertificate = {
+          name: "NCA Certificate",
+          url: (profile.ncaCertificate || profile.ncaRegCardUrl) as string,
+          type: "ncaCertificate",
+          uploadedAt: "Existing",
+          status: status as DocumentStatus,
+        };
+      }
+
+      // 5. Portfolio / Projects
+      const projects = profile.professionalProjects || profile.contractorProjects || profile.previousJobPhotoUrls;
+      if (Array.isArray(projects)) {
+        projects.forEach((proj: any, index: number) => {
+          const key = `portfolio${index + 1}`;
+          initialDocs[key] = {
+            name: proj.projectName || `Project ${index + 1}`,
+            url: proj.fileUrl || proj.url,
+            type: key,
+            uploadedAt: "Existing",
+            status: status as DocumentStatus,
+          };
+        });
+      }
     }
+    setDocuments(initialDocs);
     setIsLoaded(true);
   }, [userData]);
-
-  /* -------------------- Save to localStorage -------------------- */
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem(
-        `${STORAGE_KEY}_${userData.id}`,
-        JSON.stringify(documents)
-      );
-      window.dispatchEvent(new Event("storage"));
-    }
-  }, [documents, userData.id, isLoaded]);
 
   /* -------------------- Document Configuration by User Type -------------------- */
   const getDocumentConfig = (): DocumentItem[] => {
@@ -299,95 +394,124 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
   ).length;
   const overallStatus = approvedCount >= totalRequired ? "approved" : "pending";
 
+
   /* -------------------- Upload Handler -------------------- */
-  const handleUpload = (file: File, key: string) => {
+  const handleUpload = async (file: File, key: string) => {
     setUploadingFiles((p) => ({ ...p, [key]: true }));
 
-    setTimeout(() => {
-      const url = URL.createObjectURL(file);
+    try {
+      const uploadedFile = await uploadFileWithAxios(axiosInstance, file);
       const now = new Date();
       const dateStr = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
 
-      setDocuments((prev) => ({
-        ...prev,
+      const updatedDocs = {
+        ...documents,
         [key]: {
-          name: file.name,
-          url,
+          name: uploadedFile.originalName,
+          url: uploadedFile.url,
           type: key,
           uploadedAt: dateStr,
-          status: "pending",
+          status: "pending" as DocumentStatus,
           statusReason: "Awaiting admin verification",
         },
-      }));
+      };
 
+      setDocuments(updatedDocs);
+      await persistDocuments(updatedDocs);
       toast.success(`${file.name} uploaded successfully`);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to upload file");
+    } finally {
       setUploadingFiles((p) => ({ ...p, [key]: false }));
-    }, 500);
+    }
   };
 
   /* -------------------- Delete Handler -------------------- */
-  const handleDelete = (key: string) => {
+  const handleDelete = async (key: string) => {
     const updated = { ...documents };
     delete updated[key];
-    setDocuments(updated);
-    toast.success("Document deleted");
+    try {
+      await persistDocuments(updated);
+      setDocuments(updated);
+      toast.success("Document deleted");
+    } catch (error: any) {
+      toast.error("Failed to delete document");
+    }
   };
 
   /* -------------------- Admin Action Handlers -------------------- */
-  const handleApprove = (key: string) => {
+  const handleApprove = async (key: string) => {
     const now = new Date().toISOString();
-    setDocuments((prev) => ({
-      ...prev,
+    const updatedDocs = {
+      ...documents,
       [key]: {
-        ...prev[key],
-        status: "approved",
+        ...documents[key],
+        status: "approved" as DocumentStatus,
         statusReason: "Document verified and approved",
         statusDate: now,
         reviewedBy: "Admin",
       },
-    }));
-    toast.success("Document approved");
-    closeActionModal();
+    };
+    try {
+      await persistDocuments(updatedDocs);
+      setDocuments(updatedDocs);
+      toast.success("Document approved");
+      closeActionModal();
+    } catch (error: any) {
+      toast.error("Failed to approve document");
+    }
   };
 
-  const handleReject = (key: string, reason: string) => {
+  const handleReject = async (key: string, reason: string) => {
     if (!reason.trim()) {
       toast.error("Please provide a reason for rejection");
       return;
     }
     const now = new Date().toISOString();
-    setDocuments((prev) => ({
-      ...prev,
+    const updatedDocs = {
+      ...documents,
       [key]: {
-        ...prev[key],
-        status: "rejected",
+        ...documents[key],
+        status: "rejected" as DocumentStatus,
         statusReason: reason,
         statusDate: now,
         reviewedBy: "Admin",
       },
-    }));
-    toast.success("Document rejected");
-    closeActionModal();
+    };
+    try {
+      await persistDocuments(updatedDocs);
+      setDocuments(updatedDocs);
+      toast.success("Document rejected");
+      closeActionModal();
+    } catch (error: any) {
+      toast.error("Failed to reject document");
+    }
   };
 
-  const handleRequestReupload = (key: string, reason: string) => {
+  const handleRequestReupload = async (key: string, reason: string) => {
     if (!reason.trim()) {
       toast.error("Please provide a reason for re-upload request");
       return;
     }
     const now = new Date().toISOString();
-    setDocuments((prev) => ({
-      ...prev,
+    const updatedDocs = {
+      ...documents,
       [key]: {
-        ...prev[key],
-        status: "reupload_requested",
+        ...documents[key],
+        status: "reupload_requested" as DocumentStatus,
         statusReason: reason,
         statusDate: now,
         reviewedBy: "Admin",
       },
-    }));
-    toast.success("Re-upload requested");
-    closeActionModal();
+    };
+    try {
+      await persistDocuments(updatedDocs);
+      setDocuments(updatedDocs);
+      toast.success("Re-upload requested");
+      closeActionModal();
+    } catch (error: any) {
+      toast.error("Failed to request re-upload");
+    }
   };
 
   const openActionModal = (docKey: string, action: "approve" | "reject" | "reupload") => {
@@ -524,9 +648,9 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
         {/* Status Reason / Context */}
         {uploaded.statusReason && (
           <div className={`mb-3 p-2 rounded-lg text-xs ${status === "rejected" ? "bg-red-50 text-red-700" :
-              status === "reupload_requested" ? "bg-blue-50 text-blue-700" :
-                status === "approved" ? "bg-green-50 text-green-700" :
-                  "bg-amber-50 text-amber-700"
+            status === "reupload_requested" ? "bg-blue-50 text-blue-700" :
+              status === "approved" ? "bg-green-50 text-green-700" :
+                "bg-amber-50 text-amber-700"
             }`}>
             <span className="font-medium">
               {status === "pending" ? "Status: " :
@@ -698,20 +822,17 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
               {/* Verify Button - Admin Only */}
               {isAdmin && !userData?.adminApproved && (
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     setIsVerifying(true);
-                    updateUserInLocalStorage(userData.id, {
-                      adminApproved: true,
-                      approved: true,
-                      status: "VERIFIED",
-                    });
-                    Object.assign(userData, {
-                      adminApproved: true,
-                      approved: true,
-                      status: "VERIFIED",
-                    });
-                    toast.success("User profile has been verified successfully!");
-                    setIsVerifying(false);
+                    try {
+                      await handleVerifyUser(axiosInstance, userData.id);
+                      toast.success("User profile has been verified successfully!");
+                      window.location.reload();
+                    } catch (error: any) {
+                      toast.error(error.message || "Failed to verify user");
+                    } finally {
+                      setIsVerifying(false);
+                    }
                   }}
                   disabled={isVerifying}
                   className="flex items-center gap-2 py-2 px-4 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
@@ -780,7 +901,7 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
                         Return
                       </button>
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           setShowGlobalActions(false);
                           // Approve all pending documents
                           const pendingDocs = allDocuments.filter(d =>
@@ -788,22 +909,26 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
                           );
                           if (pendingDocs.length > 0) {
                             const now = new Date().toISOString();
-                            setDocuments(prev => {
-                              const updated = { ...prev };
-                              pendingDocs.forEach(doc => {
-                                if (updated[doc.key]) {
-                                  updated[doc.key] = {
-                                    ...updated[doc.key],
-                                    status: "approved",
-                                    statusReason: "Document verified and approved",
-                                    statusDate: now,
-                                    reviewedBy: "Admin",
-                                  };
-                                }
-                              });
-                              return updated;
+                            const updated = { ...documents };
+                            pendingDocs.forEach(doc => {
+                              if (updated[doc.key]) {
+                                updated[doc.key] = {
+                                  ...updated[doc.key],
+                                  status: "approved" as DocumentStatus,
+                                  statusReason: "Document verified and approved",
+                                  statusDate: now,
+                                  reviewedBy: "Admin",
+                                };
+                              }
                             });
-                            toast.success(`${pendingDocs.length} document(s) approved`);
+
+                            try {
+                              await persistDocuments(updated);
+                              setDocuments(updated);
+                              toast.success(`${pendingDocs.length} document(s) approved`);
+                            } catch (error: any) {
+                              toast.error("Failed to approve all documents");
+                            }
                           } else {
                             toast.info("All documents are already approved");
                           }
@@ -811,7 +936,7 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
                         className="w-full flex items-center gap-2 px-4 py-3 text-sm text-green-700 hover:bg-green-50 transition"
                       >
                         <FiCheck className="w-4 h-4" />
-                        Approve
+                        Approve All
                       </button>
                     </div>
                   )}
@@ -824,8 +949,12 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           {/* Progress indicator */}
           <div className="mb-8">
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <span>
-                {approvedCount} of {totalRequired} required documents approved
+              <span className="font-medium text-gray-900">
+                {requiredUploaded} of {totalRequired} documents uploaded
+              </span>
+              <span className="text-gray-300">|</span>
+              <span className={approvedCount === totalRequired ? "text-green-600 font-medium" : "text-amber-600"}>
+                {approvedCount} approved
               </span>
               {uploadedCount > requiredUploaded && (
                 <span className="text-gray-400">
@@ -833,10 +962,17 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
                 </span>
               )}
             </div>
-            <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden relative">
+              {/* Uploaded Progress (Amber) */}
               <div
-                className={`h-full transition-all duration-500 ${overallStatus === "approved" ? "bg-green-500" : "bg-amber-500"
-                  }`}
+                className="absolute h-full bg-amber-500 transition-all duration-500 opacity-60"
+                style={{
+                  width: `${totalRequired > 0 ? (requiredUploaded / totalRequired) * 100 : 0}%`,
+                }}
+              />
+              {/* Approved Progress (Green) - Layers on top */}
+              <div
+                className="absolute h-full bg-green-500 transition-all duration-500"
                 style={{
                   width: `${totalRequired > 0 ? (approvedCount / totalRequired) * 100 : 0}%`,
                 }}
@@ -845,6 +981,11 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
             {requiredUploaded > approvedCount && (
               <p className="text-xs text-amber-600 mt-1">
                 {requiredUploaded - approvedCount} document(s) pending review
+              </p>
+            )}
+            {approvedCount === totalRequired && (
+              <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" /> All required documents verified
               </p>
             )}
           </div>
