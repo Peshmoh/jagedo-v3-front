@@ -102,7 +102,8 @@ export function CustomerSignupForm({
       try {
         const response = await verifyEmail({ email: formData.email });
         const available = response.data.available
-        if (available) {
+        const message = response.data.message
+        if (available || message === "User not found") {
           setEmailStatus('available');
         } else {
           setEmailStatus('taken');
@@ -110,7 +111,11 @@ export function CustomerSignupForm({
 
       } catch (error: any) {
         console.error(error)
-        setEmailStatus('idle');
+        if (error.response?.data?.message === "User not found") {
+          setEmailStatus('available');
+        } else {
+          setEmailStatus('idle');
+        }
       }
     }, 800);
 

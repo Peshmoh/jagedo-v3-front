@@ -40,7 +40,7 @@ export const useProfileCompletion = (userData: any, userType: string): { [key: s
       'experience': 'incomplete',       // Depends on experience data
       'products': 'incomplete',         // Not required yet
     };
-    
+
     if (!userData) {
       return defaultStatus;
     }
@@ -70,18 +70,34 @@ export const useProfileCompletion = (userData: any, userType: string): { [key: s
       return docMap[userTypeLC] || [];
     };
 
-    // Get documents uploaded from localStorage
-    // Storage key format: uploads_demo_[userId]
-    const uploadedDocs = JSON.parse(
-      localStorage.getItem(`uploads_demo_${userData.id}`) || '{}'
-    );
-
-    // Check if ALL required documents are uploaded
+    // Check if ALL required documents are uploaded in the actual profile data
+    const profile = userData?.userProfile || {};
     const requiredDocs = getRequiredDocuments();
-    // If no docs required (edge case), mark as complete
-    // Otherwise, check if every required document exists in localStorage
-    const uploadsComplete = requiredDocs.length === 0 || 
-      requiredDocs.every(doc => uploadedDocs[doc]);
+
+    // Mapping of internal document keys to profile property names
+    const checkDocument = (key: string): boolean => {
+      switch (key) {
+        case 'idFront': return !!profile.idFrontUrl;
+        case 'idBack': return !!profile.idBackUrl;
+        case 'kraPIN': return !!profile.kraPIN;
+        case 'certificate': return !!profile.certificateUrl;
+        case 'academicCertificate': return !!profile.academicCertificateUrl;
+        case 'cv': return !!profile.cvUrl;
+        case 'practiceLicense': return !!profile.practiceLicense;
+        case 'businessPermit':
+        case 'singleBusinessPermit':
+          return !!(profile.businessPermit || profile.singleBusinessPermit);
+        case 'businessRegistration':
+        case 'certificateOfIncorporation':
+          return !!(profile.certificateOfIncorporation || profile.businessRegistration || profile.registrationCertificateUrl);
+        case 'companyProfile': return !!profile.companyProfile;
+        case 'ncaCertificate': return !!(profile.ncaCertificate || profile.ncaRegCardUrl);
+        default: return !!profile[key];
+      }
+    };
+
+    const uploadsComplete = requiredDocs.length === 0 ||
+      requiredDocs.every(doc => checkDocument(doc));
 
     // ============================================
     // EXPERIENCE COMPLETION
@@ -98,7 +114,7 @@ export const useProfileCompletion = (userData: any, userType: string): { [key: s
       const hasGrade = userData?.userProfile?.grade;
       const hasExperience = userData?.userProfile?.experience;
       const hasProjects = userData?.userProfile?.previousJobPhotoUrls &&
-                          userData.userProfile.previousJobPhotoUrls.length > 0;
+        userData.userProfile.previousJobPhotoUrls.length > 0;
       experienceComplete = !!(hasGrade && hasExperience && hasProjects);
     } else if (userTypeUpper === 'PROFESSIONAL') {
       // PROFESSIONAL: needs profession, professionalLevel, yearsOfExperience, and professionalProjects
@@ -106,7 +122,7 @@ export const useProfileCompletion = (userData: any, userType: string): { [key: s
       const hasLevel = userData?.userProfile?.professionalLevel;
       const hasExperience = userData?.userProfile?.yearsOfExperience;
       const hasProjects = userData?.userProfile?.professionalProjects &&
-                          userData.userProfile.professionalProjects.length > 0;
+        userData.userProfile.professionalProjects.length > 0;
       experienceComplete = !!(hasProfession && hasLevel && hasExperience && hasProjects);
     } else if (userTypeUpper === 'CONTRACTOR') {
       // CONTRACTOR: needs contractorType, licenseLevel, contractorExperiences, and contractorProjects
@@ -114,7 +130,7 @@ export const useProfileCompletion = (userData: any, userType: string): { [key: s
       const hasLevel = userData?.userProfile?.licenseLevel;
       const hasExperience = userData?.userProfile?.contractorExperiences;
       const hasProjects = userData?.userProfile?.contractorProjects &&
-                          userData.userProfile.contractorProjects.length > 0;
+        userData.userProfile.contractorProjects.length > 0;
       experienceComplete = !!(hasType && hasLevel && hasExperience && hasProjects);
     } else if (userTypeUpper === 'HARDWARE') {
       // HARDWARE: needs hardwareType, businessType, experience, and hardwareProjects
@@ -122,7 +138,7 @@ export const useProfileCompletion = (userData: any, userType: string): { [key: s
       const hasBusinessType = userData?.userProfile?.businessType;
       const hasExperience = userData?.userProfile?.experience;
       const hasProjects = userData?.userProfile?.hardwareProjects &&
-                          userData.userProfile.hardwareProjects.length > 0;
+        userData.userProfile.hardwareProjects.length > 0;
       experienceComplete = !!(hasType && hasBusinessType && hasExperience && hasProjects);
     }
 
@@ -136,9 +152,9 @@ export const useProfileCompletion = (userData: any, userType: string): { [key: s
       'experience': experienceComplete ? 'complete' : 'incomplete',
       'products': 'incomplete',         // Not tracked yet
     };
-    
+
     return statusObject;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData, userType, storageVersion]);
 
   return completionStatus;

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-// import useAxiosWithAuth from '@/utils/axiosInterceptor';
+import useAxiosWithAuth from '@/utils/axiosInterceptor';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import { useProfileCompletion } from '@/hooks/useProfileCompletion';
@@ -15,8 +15,8 @@ function ProfileApp() {
   const [error, setError] = useState<string | null>(null);
   const { id: userId, role: type } = useParams<{ id: string; role: string }>();
   const location = useLocation();
-    const completionStatus = useProfileCompletion(user, userType);
-  // const axiosInstance = useAxiosWithAuth(import.meta.env.VITE_SERVER_URL);
+  const completionStatus = useProfileCompletion(user, userType);
+  const axiosInstance = useAxiosWithAuth(import.meta.env.VITE_SERVER_URL);
 
   useEffect(() => {
     // --- ORIGINAL API FETCH (commented out) ---
@@ -55,9 +55,19 @@ function ProfileApp() {
     // fetchUserData();
     // --- END ORIGINAL API FETCH ---
 
-    // --- localStorage-based fetch ---
-    setLoading(true);
-    setError(null);
+      try {
+        if (userId) {
+          const response = await axiosInstance.get(`/api/admin/profiles/${userId}`);
+          const fetchedUser = response.data.data;
+          console.log("Fetched User Data: ", fetchedUser)
+          setUser(fetchedUser);
+          setUserType(fetchedUser.userType || type?.toUpperCase() || 'CUSTOMER');
+        } else {
+          throw new Error('No user ID provided');
+        }
+      } catch (err: any) {
+        console.error('Error fetching user data:', err);
+        setError(err.message || 'Failed to load user profile');
 
     try {
       // 1. Primary source: React Router location state (passed from register pages)
@@ -67,8 +77,8 @@ function ProfileApp() {
         setUser(stateData);
         setuserType(stateData.userType || type?.toUpperCase() || 'CUSTOMER');
         setLoading(false);
-        return;
       }
+    };
 
       // 2. Check localStorage "users" array by userId
       const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
@@ -170,6 +180,7 @@ function ProfileApp() {
         onTabChange={setActiveTab}
         userType={userType}
         completionStatus={completionStatus}
+        userData={user}
       />
       <MainContent
         activeTab={activeTab}
@@ -177,7 +188,7 @@ function ProfileApp() {
         userData={user}
       />
     </div>
-    
+
   );
 }
 
