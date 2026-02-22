@@ -62,7 +62,7 @@ function AccountInfo({ data, refreshData }) {
         type: data.accountType, // e.g., ORGANIZATION
         organizationName: data.organizationName || "",
         contactPerson: `${data.contactfirstName || ""} ${data.contactlastName || ""}`.trim(),
-        avatar: data.userProfile?.profileImage || null
+        avatar: data.profileImage || null
       };
 
       setProfile(mappedProfile);
