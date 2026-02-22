@@ -9,7 +9,7 @@ import { useProfileCompletion } from '@/hooks/useProfileCompletion';
 
 function ProfileApp() {
   const [activeTab, setActiveTab] = useState('account-info');
-  const [userType, setUserType] = useState<string>('CUSTOMER');
+  const [userType, setuserType] = useState<string>('CUSTOMER');
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +30,7 @@ function ProfileApp() {
     //       const fetchedUser = response.data.data;
     //       console.log("Fetched User Data: ", fetchedUser)
     //       setUser(fetchedUser);
-    //       setUserType(fetchedUser.userType || type?.toUpperCase() || 'CUSTOMER');
+    //       setuserType(fetchedUser.userType || type?.toUpperCase() || 'CUSTOMER');
     //     } else {
     //       throw new Error('No user ID provided');
     //     }
@@ -45,7 +45,7 @@ function ProfileApp() {
     //         email: 'N/A',
     //         userType: type?.toUpperCase() || 'CUSTOMER'
     //       });
-    //       setUserType(type?.toUpperCase() || 'CUSTOMER');
+    //       setuserType(type?.toUpperCase() || 'CUSTOMER');
     //     }
     //   } finally {
     //     setLoading(false);
@@ -65,7 +65,7 @@ function ProfileApp() {
       if (stateData) {
         console.log("Fetched User Data from location state: ", stateData);
         setUser(stateData);
-        setUserType(stateData.userType || type?.toUpperCase() || 'CUSTOMER');
+        setuserType(stateData.userType || type?.toUpperCase() || 'CUSTOMER');
         setLoading(false);
         return;
       }
@@ -77,7 +77,7 @@ function ProfileApp() {
       if (foundUser) {
         console.log("Fetched User Data from localStorage (users): ", foundUser);
         setUser(foundUser);
-        setUserType(foundUser.userType || type?.toUpperCase() || 'CUSTOMER');
+        setuserType(foundUser.userType || type?.toUpperCase() || 'CUSTOMER');
         setLoading(false);
         return;
       }
@@ -89,7 +89,7 @@ function ProfileApp() {
       if (foundBuilder) {
         console.log("Fetched User Data from localStorage (builders): ", foundBuilder);
         setUser(foundBuilder);
-        setUserType(foundBuilder.userType || type?.toUpperCase() || 'FUNDI');
+        setuserType(foundBuilder.userType || type?.toUpperCase() || 'FUNDI');
         setLoading(false);
         return;
       }
@@ -101,7 +101,7 @@ function ProfileApp() {
       if (foundCustomer) {
         console.log("Fetched User Data from localStorage (customers): ", foundCustomer);
         setUser(foundCustomer);
-        setUserType(foundCustomer.userType || type?.toUpperCase() || 'CUSTOMER');
+        setuserType(foundCustomer.userType || type?.toUpperCase() || 'CUSTOMER');
         setLoading(false);
         return;
       }
@@ -111,7 +111,7 @@ function ProfileApp() {
       if (singleUser && (String(singleUser.id) === String(userId) || singleUser.id === Number(userId))) {
         console.log("Fetched User Data from localStorage (single user): ", singleUser);
         setUser(singleUser);
-        setUserType(singleUser.userType || type?.toUpperCase() || 'CUSTOMER');
+        setuserType(singleUser.userType || type?.toUpperCase() || 'CUSTOMER');
       } else if (userId) {
         // No user found – set a fallback stub
         setUser({
@@ -120,7 +120,7 @@ function ProfileApp() {
           email: 'N/A',
           userType: type?.toUpperCase() || 'CUSTOMER'
         });
-        setUserType(type?.toUpperCase() || 'CUSTOMER');
+        setuserType(type?.toUpperCase() || 'CUSTOMER');
         setError('User not found in localStorage');
       } else {
         setError('No user ID provided');

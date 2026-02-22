@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FiDownload, FiEye, FiUpload, FiTrash2, FiCheck, FiX, FiRefreshCw, FiChevronDown } from "react-icons/fi";
 import { FileText, Image, AlertCircle, CheckCircle, XCircle, Clock } from "lucide-react";
 import { toast, Toaster } from "sonner";
-import { getMockUploadsForUserType } from "@/pages/data/mockUploads";
+import { getMockUploadsForuserType } from "@/pages/data/mockUploads";
 
 const STORAGE_KEY = "uploads_demo";
 
