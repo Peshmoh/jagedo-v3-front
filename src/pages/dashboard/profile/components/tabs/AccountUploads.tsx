@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { FiDownload, FiEye, FiUpload, FiTrash2, FiCheck, FiX, FiRefreshCw, FiChevronDown } from "react-icons/fi";
-import { FileText, Image, AlertCircle, CheckCircle, XCircle, Clock } from "lucide-react";
+import { FiDownload, FiEye, FiUpload, FiCheck, FiRefreshCw, FiChevronDown } from "react-icons/fi";
+import { FileText, Image, CheckCircle, XCircle, Clock } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { adminDynamicUpdateAccountUploads } from "@/api/uploads.api";
 import { handleVerifyUser } from "@/api/provider.api";
@@ -65,7 +65,7 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           idFront: updatedDocs.idFront?.url || "",
           idBack: updatedDocs.idBack?.url || "",
           certificate: updatedDocs.certificate?.url || "",
-          kraPIN: updatedDocs.kraPIN?.url || "",
+          krapin: updatedDocs.kraPIN?.url || "",
         };
       } else if (type === "professional") {
         payload = {
@@ -73,14 +73,14 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           idBack: updatedDocs.idBack?.url || "",
           academicCertificate: updatedDocs.academicCertificate?.url || "",
           cvUrl: updatedDocs.cv?.url || updatedDocs.cvUrl?.url || "",
-          kraPIN: updatedDocs.kraPIN?.url || "",
+          krapin: updatedDocs.kraPIN?.url || "",
           practiceLicense: updatedDocs.practiceLicense?.url || "",
         };
       } else if (type === "contractor") {
         payload = {
           businessRegistration: updatedDocs.certificateOfIncorporation?.url || "",
           businessPermit: updatedDocs.businessPermit?.url || "",
-          kraPIN: updatedDocs.kraPIN?.url || "",
+          krapin: updatedDocs.kraPIN?.url || "",
           companyProfile: updatedDocs.companyProfile?.url || "",
         };
       } else if (type === "customer") {
@@ -88,20 +88,20 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           payload = {
             idFrontUrl: updatedDocs.idFront?.url || "",
             idBackUrl: updatedDocs.idBack?.url || "",
-            kraPIN: updatedDocs.kraPIN?.url || "",
+            krapin: updatedDocs.kraPIN?.url || "",
           };
         } else {
           payload = {
             businessPermit: updatedDocs.businessPermit?.url || "",
             certificateOfIncorporation: updatedDocs.certificateOfIncorporation?.url || "",
-            kraPIN: updatedDocs.kraPIN?.url || "",
+            krapin: updatedDocs.kraPIN?.url || "",
           };
         }
       } else if (type === "hardware") {
         payload = {
           certificateOfIncorporation: updatedDocs.certificateOfIncorporation?.url || "",
           businessPermit: updatedDocs.businessPermit?.url || "",
-          kraPIN: updatedDocs.kraPIN?.url || "",
+          krapin: updatedDocs.kraPIN?.url || "",
           companyProfile: updatedDocs.companyProfile?.url || "",
         };
       }
@@ -123,7 +123,7 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
   useEffect(() => {
     // 1. Start with documents from userProfile if available
     const initialDocs: Record<string, UploadedDocument> = {};
-    const profile = userData?.userProfile;
+    const profile = userData;
 
     const status = userData?.adminApproved ? "approved" : "pending";
 
@@ -147,10 +147,10 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           status: status as DocumentStatus,
         };
       }
-      if (profile.kraPIN) {
+      if (profile.krapin || profile.kraPIN) {
         initialDocs.kraPIN = {
           name: "KRA PIN Certificate",
-          url: profile.kraPIN,
+          url: (profile.krapin || profile.kraPIN) as string,
           type: "kraPIN",
           uploadedAt: "Existing",
           status: status as DocumentStatus,
@@ -317,7 +317,7 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
       ];
 
       // Add category-based documents from contractor categories
-      const contractorCategories = userData?.userProfile?.contractorCategories || userData?.userProfile?.contractorExperiences;
+      const contractorCategories = userData?.contractorCategories || userData?.contractorExperiences;
       if (Array.isArray(contractorCategories) && contractorCategories.length > 0) {
         contractorCategories.forEach((cat: any, index: number) => {
           const categoryName = cat.category || `Category ${index + 1}`;

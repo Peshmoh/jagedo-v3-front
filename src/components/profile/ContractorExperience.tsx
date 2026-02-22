@@ -56,12 +56,12 @@ const ContractorExperience = ({ data, refreshData }: any) => {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const axiosInstance = useAxiosWithAuth(import.meta.env.VITE_SERVER_URL);
 
-  const isReadOnly = data?.userProfile?.adminApproved === true;
+  const isReadOnly = data?.adminApproved === true;
 
   /* ---------- LOAD FROM PROP ---------- */
   useEffect(() => {
-    if (data?.userProfile) {
-      const up = data.userProfile;
+    if (data) {
+      const up = data;
 
       const exps = up.contractorExperiences || [];
       if (exps.length > 0) {

@@ -123,11 +123,11 @@ const AccountUploads = ({ data, refreshData }) => {
 
   /* ---------- LOAD FROM PROP ---------- */
   useEffect(() => {
-    if (data?.userProfile) {
-      setDocuments(data.userProfile);
+    if (data) {
+      setDocuments(data);
 
-      if (userType === 'contractor' && data.userProfile.contractorExperiences) {
-        const catNames = data.userProfile.contractorExperiences.map(exp => exp.category);
+      if (userType === 'contractor' && data.contractorExperiences) {
+        const catNames = data.contractorExperiences.map(exp => exp.category);
         setCategories(catNames);
       }
     }
@@ -167,14 +167,14 @@ const AccountUploads = ({ data, refreshData }) => {
           const payload = {
             idFrontUrl: updatedUrls.idFrontUrl || null,
             idBackUrl: updatedUrls.idBackUrl || null,
-            kraPIN: updatedUrls.kraPIN || null
+            krapin: updatedUrls.krapin || null
           };
           response = await uploadIndividualCustomerDocuments(axiosInstance, payload);
         } else {
           const payload = {
             businessPermit: updatedUrls.businessPermit || null,
             certificateOfIncorporation: updatedUrls.certificateOfIncorporation || null,
-            kraPIN: updatedUrls.kraPIN || null
+            krapin: updatedUrls.krapin || null
           };
           response = await uploadOrganizationCustomerDocuments(axiosInstance, payload);
         }
@@ -183,7 +183,7 @@ const AccountUploads = ({ data, refreshData }) => {
           idFront: updatedUrls.idFrontUrl || null,
           idBack: updatedUrls.idBackUrl || null,
           certificate: updatedUrls.certificateUrl || null,
-          kraPIN: updatedUrls.kraPIN || null
+          krapin: updatedUrls.krapin || null
         };
         response = await uploadFundiDocuments(axiosInstance, payload);
       } else if (userType === 'professional') {
@@ -192,7 +192,7 @@ const AccountUploads = ({ data, refreshData }) => {
           idBack: updatedUrls.idBackUrl || null,
           academicCertificate: updatedUrls.academicCertificateUrl || null,
           cvUrl: updatedUrls.cvUrl || null,
-          kraPIN: updatedUrls.kraPIN || null,
+          krapin: updatedUrls.krapin || null,
           practiceLicense: updatedUrls.practiceLicense || null
         };
         response = await uploadProfessionalDocuments(axiosInstance, payload);
@@ -200,14 +200,14 @@ const AccountUploads = ({ data, refreshData }) => {
         const payload = {
           businessRegistration: updatedUrls.businessRegistration || null,
           businessPermit: updatedUrls.businessPermit || null,
-          kraPIN: updatedUrls.kraPIN || null,
+          krapin: updatedUrls.krapin || null,
           companyProfile: updatedUrls.companyProfile || null
         };
         response = await uploadContractorDocuments(axiosInstance, payload);
       } else if (userType === 'hardware') {
         const payload = {
           businessRegistration: updatedUrls.businessRegistration || null,
-          kraPIN: updatedUrls.kraPIN || null,
+          krapin: updatedUrls.krapin || null,
           singleBusinessPermit: updatedUrls.singleBusinessPermit || null,
           companyProfile: updatedUrls.companyProfile || null
         };
@@ -231,18 +231,18 @@ const AccountUploads = ({ data, refreshData }) => {
         ? [
           { label: "ID Front", key: "idFrontUrl" },
           { label: "ID Back", key: "idBackUrl" },
-          { label: "KRA PIN", key: "kraPIN" },
+          { label: "KRA PIN", key: "krapin" },
         ]
         : [
           { label: "Business Permit", key: "businessPermit" },
           { label: "Certificate of Incorporation", key: "certificateOfIncorporation" },
-          { label: "KRA PIN", key: "kraPIN" },
+          { label: "KRA PIN", key: "krapin" },
         ],
       fundi: [
         { label: "ID Front", key: "idFrontUrl" },
         { label: "ID Back", key: "idBackUrl" },
         { label: "Certificate", key: "certificateUrl" },
-        { label: "KRA PIN", key: "kraPIN" },
+        { label: "KRA PIN", key: "krapin" },
       ],
       professional: [
         { label: "ID Front", key: "idFrontUrl" },
@@ -250,11 +250,11 @@ const AccountUploads = ({ data, refreshData }) => {
         { label: "Academics Certificate", key: "academicCertificateUrl" },
         { label: "CV", key: "cvUrl" },
         { label: "Practice License", key: "practiceLicense" },
-        { label: "KRA PIN", key: "kraPIN" },
+        { label: "KRA PIN", key: "krapin" },
       ],
       hardware: [
         { label: "Business Registration", key: "businessRegistration" },
-        { label: "KRA PIN", key: "kraPIN" },
+        { label: "KRA PIN", key: "krapin" },
         { label: "Single Business Permit", key: "singleBusinessPermit" },
         { label: "Company Profile", key: "companyProfile" },
       ],
@@ -310,7 +310,7 @@ const AccountUploads = ({ data, refreshData }) => {
   const generalFields = [
     { label: "Business Registration", key: "businessRegistration" },
     { label: "Business Permit", key: "businessPermit" },
-    { label: "KRA PIN", key: "kraPIN" },
+    { label: "KRA PIN", key: "krapin" },
     { label: "Company Profile", key: "companyProfile" },
   ];
 

@@ -25,7 +25,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ userData }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const showVerificationMessage = userData.adminApproved;
   const [avatarSrc, setAvatarSrc] = useState(
-    userData?.userProfile?.profileImage,
+    userData?.profileImage,
   );
 
   const [editingField, setEditingField] = useState<string | null>(null);

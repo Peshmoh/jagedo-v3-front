@@ -47,12 +47,12 @@ const ProffExperience = ({ data, refreshData }: any) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
-    const isReadOnly = data?.userProfile?.adminApproved === true;
+    const isReadOnly = data?.adminApproved === true;
 
     /* ---------- LOAD FROM PROP ---------- */
     useEffect(() => {
-        if (data?.userProfile) {
-            const up = data.userProfile;
+        if (data) {
+            const up = data;
             setCategory(up.profession || "Architect");
             setSpecialization(up.specialization || "Residential");
             setLevel(up.professionalLevel || "Professional");
