@@ -26,7 +26,6 @@ interface ContractorProject {
   id: string;
   categoryId?: string;
   projectName: string;
-  // We store either the File object (new upload) or the URL string (existing)
   projectFile: File | string | null;
   referenceLetterFile: File | string | null;
 }
@@ -95,60 +94,33 @@ const ContractorExperience = ({ data, refreshData }: any) => {
   /* ---------- LOAD FROM PROP ---------- */
   useEffect(() => {
     if (data) {
-      const up = data;
+      const up = data.userProfile || data;
 
       const exps = up.contractorExperiences || [];
-      const contractorTypes = up.contractorTypes || ""; // comma separated slugs
+      let mappedCategories: ContractorCategory[] = [];
 
       if (exps.length > 0) {
-        setCategories(exps.map((exp: any) => ({
+        mappedCategories = exps.map((exp: any) => ({
           id: exp.id || crypto.randomUUID(),
           category: exp.category || "",
           specialization: exp.specialization || "",
           categoryClass: exp.categoryClass || "",
           yearsOfExperience: exp.yearsOfExperience || "",
-          certificate: exp.certificate || "",
-          license: exp.license || "",
-        })));
-      } else if (contractorTypes) {
-        const slugs = contractorTypes.split(',').map((s: string) => s.trim());
-        const prePopulated = slugs
-          .map(slug => SLUG_MAP[slug])
-          .filter(Boolean)
-          .map(name => ({
-            id: crypto.randomUUID(),
-            category: name,
-            specialization: "",
-            categoryClass: "",
-            yearsOfExperience: "",
-          }));
-
-        if (prePopulated.length > 0) {
-          setCategories(prePopulated);
-          // Also pre-populate projects for these categories
-          const prePopProjects = prePopulated.map(cat => ({
-            id: crypto.randomUUID(),
-            categoryId: cat.id,
-            projectName: `${cat.category} Project`,
-            projectFile: null,
-            referenceLetterFile: null,
-          }));
-          setProjects(prePopProjects);
-        } else {
-          setCategories([{ id: crypto.randomUUID(), category: "", specialization: "", categoryClass: "", yearsOfExperience: "" }]);
-        }
+        }));
+        setCategories(mappedCategories);
       } else {
         setCategories([{ id: crypto.randomUUID(), category: "", specialization: "", categoryClass: "", yearsOfExperience: "" }]);
       }
 
       const projs = up.contractorProjects || [];
       if (projs.length > 0) {
-        setProjects(projs.map((proj: any) => ({
+        setProjects(projs.map((proj: any, index: number) => ({
           id: proj.id || crypto.randomUUID(),
-          categoryId: proj.categoryId,
+          // Link to category by index if categoryId is missing in stored data
+          categoryId: proj.categoryId || (mappedCategories[index] ? mappedCategories[index].id : null),
           projectName: proj.projectName || "",
           projectFile: proj.projectFile || null,
-          referenceLetterFile: proj.referenceLetterUrl || null,
+          referenceLetterFile: proj.referenceLetterUrl || proj.referenceLetterFile || null,
         })));
       }
       setIsLoadingProfile(false);

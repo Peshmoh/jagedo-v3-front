@@ -124,38 +124,22 @@ const AccountUploads = ({ data, refreshData }) => {
   /* ---------- LOAD FROM PROP ---------- */
   useEffect(() => {
     if (data) {
-      // Create a flat map for documents
-      const docsMap = { ...data };
+      // Use userProfile if it exists, otherwise use data itself (for customers)
+      const up = data.userProfile || data;
+      const mapped = { ...up };
 
-      const catNames = [];
-      if (userType === 'contractor') {
-        const contractorExperiences = data.contractorExperiences || [];
+      // Map potential backend keys to frontend state keys for consistency
+      if (up.idFront && !up.idFrontUrl) mapped.idFrontUrl = up.idFront;
+      if (up.idBack && !up.idBackUrl) mapped.idBackUrl = up.idBack;
+      if (up.certificate && !up.certificateUrl) mapped.certificateUrl = up.certificate;
+      if (up.academicCertificate && !up.academicCertificateUrl) mapped.academicCertificateUrl = up.academicCertificate;
+      if (up.krapin && !up.kraPIN) mapped.kraPIN = up.krapin;
 
-        if (contractorExperiences.length > 0) {
-          contractorExperiences.forEach(exp => {
-            catNames.push(exp.category);
+      setDocuments(mapped);
 
-            // Flatten certificates and licenses into docsMap
-            const categoryKey = exp.category.toUpperCase().replace(/\s+/g, '_');
-            const certKey = `${categoryKey}_CERTIFICATE`;
-            const licenseKey = `${categoryKey}_LICENSE`;
-
-            if (exp.certificate) docsMap[certKey] = exp.certificate;
-            if (exp.license) docsMap[licenseKey] = exp.license;
-          });
-        } else if (data.contractorTypes) {
-          const SLUG_MAP = {
-            "building-works": "Building Works",
-            "electrical-works": "Electrical Works",
-            "mechanical-works": "Mechanical Works",
-            "road-works": "Road Works",
-            "water-works": "Water Works",
-          };
-          data.contractorTypes.split(',').forEach(slug => {
-            const name = SLUG_MAP[slug.trim()];
-            if (name) catNames.push(name);
-          });
-        }
+      if (userType === 'contractor' && up.contractorExperiences) {
+        const catNames = up.contractorExperiences.map(exp => exp.category);
+        setCategories(catNames);
       }
 
       setDocuments(docsMap);
@@ -213,7 +197,7 @@ const AccountUploads = ({ data, refreshData }) => {
           idFront: updatedUrls.idFrontUrl || null,
           idBack: updatedUrls.idBackUrl || null,
           certificate: updatedUrls.certificateUrl || null,
-          krapin: updatedUrls.krapin || null
+          krapin: updatedUrls.kraPIN || null
         };
         response = await uploadFundiDocuments(axiosInstance, payload);
       } else if (userType === 'professional') {
@@ -259,6 +243,7 @@ const AccountUploads = ({ data, refreshData }) => {
       toast.success("All documents saved successfully!", { id: uploadToast });
       setPendingFiles({}); // Clear pending files
       if (refreshData) refreshData();
+      window.location.reload();
     } catch (error) {
       console.error("Upload error:", error);
       toast.error(error.message || "An error occurred while saving documents", { id: uploadToast });

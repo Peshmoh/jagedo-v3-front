@@ -50,56 +50,66 @@ const FundiExperience = ({ data, refreshData }: any) => {
   const [grade, setGrade] = useState("G1: Master Fundi");
   const [experience, setExperience] = useState("10+ years");
   const [specialization, setSpecialization] = useState("");
+  const [skill, setSkill] = useState("Plumber");
   const axiosInstance = useAxiosWithAuth(import.meta.env.VITE_SERVER_URL);
 
 
   /* ---------- LOAD FROM PROP ---------- */
   useEffect(() => {
     if (data) {
-      const up = data;
+      const up = data.userProfile || data;
       setGrade(up.grade || "G1: Master Fundi");
       setExperience(up.experience || "10+ years");
-      setSpecialization(up.specialization || "");
+      setSpecialization(up.specialization || up.profession || "");
+      setSkill(up.skills || "Plumber");
 
-      // Fundi projects are in previousJobPhotoUrls, Professional/Contractor usually in professionalProjects
-      const projectSource = up.previousJobPhotoUrls || up.professionalProjects || [];
+      // For Fundis, the projects are in previousJobPhotoUrls
+      const rawProjects = up.previousJobPhotoUrls || up.professionalProjects || [];
 
-      if (projectSource.length > 0) {
-        // If it's previousJobPhotoUrls, it might be a list of { projectName, fileUrl: { url } }
-        // We group them by projectName to fit the UI model
-        const groupedMap = new Map<string, any[]>();
+      if (rawProjects.length > 0) {
+        // Group by project name to fit the attachments structure (up to 3 files per project)
+        const grouped: { [key: string]: { file: null, previewUrl: string }[] } = {};
 
-        projectSource.forEach((p: any) => {
-          const name = p.projectName || "Unspecified Project";
-          if (!groupedMap.has(name)) groupedMap.set(name, []);
+        rawProjects.forEach((p: any) => {
+          const name = p.projectName || "Unnamed Project";
+          if (!grouped[name]) grouped[name] = [];
 
           let url = "";
-          if (typeof p.fileUrl === 'object' && p.fileUrl !== null) {
-            url = p.fileUrl.url || "";
+          // Check if fileUrl is an object (common in backend responses) or a string
+          if (p.fileUrl && typeof p.fileUrl === 'object' && p.fileUrl.url) {
+            url = p.fileUrl.url;
           } else if (typeof p.fileUrl === 'string') {
             url = p.fileUrl;
           } else if (p.url) {
             url = p.url;
-          } else if (Array.isArray(p.files)) {
-            // Handle professionalProjects style where files is an array
-            p.files.forEach((f: string) => groupedMap.get(name)?.push({ file: null, previewUrl: f }));
-            return;
+          } else if (typeof p === 'string') {
+            url = p;
           }
 
-          if (url) {
-            groupedMap.get(name)?.push({ file: null, previewUrl: url });
+          if (url && grouped[name].length < 3) {
+            grouped[name].push({ file: null, previewUrl: url });
           }
         });
 
-        const newAttachments = Array.from(groupedMap.entries()).map(([name, files], idx) => ({
+        const mapped = Object.keys(grouped).map((name, idx) => ({
           id: idx + 1,
           projectName: name,
-          files: files
+          files: grouped[name]
         }));
 
-        if (newAttachments.length > 0) {
-          setAttachments(newAttachments);
+        // Ensure we maintain the 3-row layout for the UI
+        const finalAttachments = [...mapped];
+        if (finalAttachments.length < 3) {
+          for (let i = finalAttachments.length; i < 3; i++) {
+            finalAttachments.push({
+              id: i + 1,
+              projectName: prefilledAttachments[i].projectName,
+              files: []
+            });
+          }
         }
+
+        setAttachments(finalAttachments);
       }
       setIsLoadingProfile(false);
     }
@@ -172,8 +182,8 @@ const FundiExperience = ({ data, refreshData }: any) => {
 
       // 2. Build Payload
       const payload = {
-        skill: "Plumber", // As per UI hardcode, or use specialization if intended
-        specialization: specialization, // Sending specialization as part of info
+        skill: skill,
+        specialization: specialization,
         grade: grade,
         experience: experience,
         previousJobPhotoUrls: flattenedProjectFiles
@@ -214,7 +224,7 @@ const FundiExperience = ({ data, refreshData }: any) => {
             <div className="grid md:grid-cols-4 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Skill</label>
-                <input value="Plumber" readOnly className="w-full p-3 bg-gray-200 rounded-lg text-sm border-none" />
+                <input value={skill} readOnly className="w-full p-3 bg-gray-200 rounded-lg text-sm border-none" />
               </div>
 
               <div>
