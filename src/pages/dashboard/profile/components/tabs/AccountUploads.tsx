@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { FiDownload, FiEye, FiUpload, FiTrash2, FiCheck, FiX, FiRefreshCw, FiChevronDown } from "react-icons/fi";
-import { FileText, Image, AlertCircle, CheckCircle, XCircle, Clock } from "lucide-react";
+import { FiDownload, FiEye, FiUpload, FiCheck, FiRefreshCw, FiChevronDown } from "react-icons/fi";
+import { FileText, Image, CheckCircle, XCircle, Clock } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { adminDynamicUpdateAccountUploads } from "@/api/uploads.api";
 import { handleVerifyUser } from "@/api/provider.api";
@@ -65,7 +65,7 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           idFront: updatedDocs.idFront?.url || "",
           idBack: updatedDocs.idBack?.url || "",
           certificate: updatedDocs.certificate?.url || "",
-          kraPIN: updatedDocs.kraPIN?.url || "",
+          krapin: updatedDocs.kraPIN?.url || "",
         };
       } else if (type === "professional") {
         payload = {
@@ -73,36 +73,51 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           idBack: updatedDocs.idBack?.url || "",
           academicCertificate: updatedDocs.academicCertificate?.url || "",
           cvUrl: updatedDocs.cv?.url || updatedDocs.cvUrl?.url || "",
-          kraPIN: updatedDocs.kraPIN?.url || "",
+          krapin: updatedDocs.kraPIN?.url || "",
           practiceLicense: updatedDocs.practiceLicense?.url || "",
         };
       } else if (type === "contractor") {
         payload = {
-          businessRegistration: updatedDocs.certificateOfIncorporation?.url || "",
+          businessRegistration: updatedDocs.certificateOfIncorporation?.url || updatedDocs.businessRegistration?.url || "",
           businessPermit: updatedDocs.businessPermit?.url || "",
-          kraPIN: updatedDocs.kraPIN?.url || "",
+          krapin: updatedDocs.kraPIN?.url || "",
           companyProfile: updatedDocs.companyProfile?.url || "",
         };
+
+        // Add dynamic category fields
+        const contractorCategories = userData?.contractorCategories || userData?.contractorExperiences || [];
+        if (Array.isArray(contractorCategories)) {
+          contractorCategories.forEach((cat: any) => {
+            const categoryName = cat.category || "";
+            const categoryKey = categoryName.toUpperCase().replace(/\s+/g, '_');
+            const certKey = `${categoryKey}_CERTIFICATE`;
+            const licenseKey = `${categoryKey}_LICENSE`;
+
+            payload[certKey] = updatedDocs[certKey]?.url || "";
+            payload[licenseKey] = updatedDocs[licenseKey]?.url || "";
+          });
+        }
       } else if (type === "customer") {
         if (accountType === "individual") {
           payload = {
             idFrontUrl: updatedDocs.idFront?.url || "",
             idBackUrl: updatedDocs.idBack?.url || "",
-            kraPIN: updatedDocs.kraPIN?.url || "",
+            krapin: updatedDocs.kraPIN?.url || "",
           };
         } else {
           payload = {
             businessPermit: updatedDocs.businessPermit?.url || "",
             certificateOfIncorporation: updatedDocs.certificateOfIncorporation?.url || "",
-            kraPIN: updatedDocs.kraPIN?.url || "",
+            krapin: updatedDocs.kraPIN?.url || "",
           };
         }
       } else if (type === "hardware") {
         payload = {
-          certificateOfIncorporation: updatedDocs.certificateOfIncorporation?.url || "",
+          businessRegistration: updatedDocs.businessRegistration?.url || "",
           businessPermit: updatedDocs.businessPermit?.url || "",
-          kraPIN: updatedDocs.kraPIN?.url || "",
-          companyProfile: updatedDocs.companyProfile?.url || "",
+          krapin: updatedDocs.kraPIN?.url || updatedDocs.krapin?.url || "",
+          ownerIdFront: updatedDocs.ownerIdFront?.url || "",
+          ownerIdBack: updatedDocs.ownerIdBack?.url || "",
         };
       }
 
@@ -123,7 +138,7 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
   useEffect(() => {
     // 1. Start with documents from userProfile if available
     const initialDocs: Record<string, UploadedDocument> = {};
-    const profile = userData?.userProfile;
+    const profile = userData;
 
     const status = userData?.adminApproved ? "approved" : "pending";
 
@@ -147,10 +162,10 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
           status: status as DocumentStatus,
         };
       }
-      if (profile.kraPIN) {
+      if (profile.krapin || profile.kraPIN) {
         initialDocs.kraPIN = {
           name: "KRA PIN Certificate",
-          url: profile.kraPIN,
+          url: (profile.krapin || profile.kraPIN) as string,
           type: "kraPIN",
           uploadedAt: "Existing",
           status: status as DocumentStatus,
@@ -237,6 +252,38 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
         };
       }
 
+      // 4b. Dynamic Contractor Category Documents
+      const contractorCategories = profile.contractorExperiences || [];
+      if (Array.isArray(contractorCategories)) {
+        contractorCategories.forEach((cat: any, index: number) => {
+          const categoryName = cat.category || "";
+          if (!categoryName) return;
+
+          const categoryKey = categoryName.toUpperCase().replace(/\s+/g, '_');
+          const certKey = `${categoryKey}_CERTIFICATE`;
+          const licenseKey = `${categoryKey}_LICENSE`;
+
+          if (cat.certificate) {
+            initialDocs[certKey] = {
+              name: `${categoryName} Certificate`,
+              url: cat.certificate,
+              type: certKey,
+              uploadedAt: "Existing",
+              status: status as DocumentStatus,
+            };
+          }
+          if (cat.license) {
+            initialDocs[licenseKey] = {
+              name: `${categoryName} Practice License`,
+              url: cat.license,
+              type: licenseKey,
+              uploadedAt: "Existing",
+              status: status as DocumentStatus,
+            };
+          }
+        });
+      }
+
       // 5. Portfolio / Projects
       const projects = profile.professionalProjects || profile.contractorProjects || profile.previousJobPhotoUrls;
       if (Array.isArray(projects)) {
@@ -317,41 +364,28 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
       ];
 
       // Add category-based documents from contractor categories
-      const contractorCategories = userData?.userProfile?.contractorCategories || userData?.userProfile?.contractorExperiences;
+      const contractorCategories = userData?.contractorCategories || userData?.contractorExperiences;
       if (Array.isArray(contractorCategories) && contractorCategories.length > 0) {
         contractorCategories.forEach((cat: any, index: number) => {
-          const categoryName = cat.category || `Category ${index + 1}`;
-          // Create a safe key from the category name
-          const safeKey = categoryName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+          const categoryName = cat.category || "";
+          if (!categoryName) return;
+
+          const categoryKey = categoryName.toUpperCase().replace(/\s+/g, '_');
+          const certKey = `${categoryKey}_CERTIFICATE`;
+          const licenseKey = `${categoryKey}_LICENSE`;
 
           // Add certificate and license for each category
           baseDocs.push({
-            key: `${safeKey}_certificate_${index}`,
+            key: certKey,
             name: `${categoryName} Certificate`,
             category: "certification",
           });
           baseDocs.push({
-            key: `${safeKey}_license_${index}`,
+            key: licenseKey,
             name: `${categoryName} Practice License`,
             category: "certification",
           });
 
-          // Add project documents for each category (3 projects per category)
-          baseDocs.push({
-            key: `${safeKey}_project1_${index}`,
-            name: `${categoryName} - Project 1`,
-            category: "portfolio",
-          });
-          baseDocs.push({
-            key: `${safeKey}_project2_${index}`,
-            name: `${categoryName} - Project 2`,
-            category: "portfolio",
-          });
-          baseDocs.push({
-            key: `${safeKey}_project3_${index}`,
-            name: `${categoryName} - Project 3`,
-            category: "portfolio",
-          });
         });
       }
 
@@ -369,7 +403,13 @@ const AccountUploads = ({ userData, isAdmin = true }: AccountUploadsProps) => {
 
     // Hardware (Organization builder)
     if (userType === "hardware") {
-      return organizationBaseDocs;
+      return [
+        { key: "businessRegistration", name: "Business Registration", category: "business" },
+        { key: "businessPermit", name: "Business Permit", category: "business" },
+        { key: "krapin", name: "KRA PIN Certificate", category: "certification" },
+        { key: "ownerIdFront", name: "Owner ID - Front", category: "id" },
+        { key: "ownerIdBack", name: "Owner ID - Back", category: "id" },
+      ];
     }
 
     return [];

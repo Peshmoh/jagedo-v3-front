@@ -51,7 +51,7 @@ const ProffExperience = ({ data, refreshData }: any) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
-    const isReadOnly = data?.userProfile?.adminApproved === true;
+    const isReadOnly = data?.adminApproved === true;
 
     /* ---------- LOAD FROM PROP ---------- */
     useEffect(() => {

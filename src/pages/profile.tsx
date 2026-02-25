@@ -59,7 +59,7 @@ function ProfilePage() {
         const userType = user?.userType?.toUpperCase();
         const serviceProviderTypes = ["FUNDI", "CONTRACTOR", "PROFESSIONAL", "HARDWARE"];
 
-        if (serviceProviderTypes.includes(userType) && !user?.userProfile?.complete) {
+        if (serviceProviderTypes.includes(userType) && !user?.profileComplete) {
             setActiveComponent("Account Info");
         }
     }, [user]);
@@ -73,15 +73,15 @@ function ProfilePage() {
             const accountType = user?.accountType?.toLowerCase() || '';
             // If it's a customer and individual, they need ID docs
             if (userType === 'customer' && accountType === 'individual') {
-                return ['idFrontUrl', 'idBackUrl', 'kraPIN'];
+                return ['idFrontUrl', 'idBackUrl', 'krapin'];
             }
 
             const docMap: Record<string, string[]> = {
-                customer: ['businessPermit', 'certificateOfIncorporation', 'kraPIN'],
-                fundi: ['idFrontUrl', 'idBackUrl', 'certificateUrl', 'kraPIN'],
-                professional: ['idFrontUrl', 'idBackUrl', 'academicCertificateUrl', 'cvUrl', 'kraPIN', 'practiceLicense'],
-                contractor: ['businessRegistration', 'businessPermit', 'kraPIN', 'companyProfile'],
-                hardware: ['businessRegistration', 'kraPIN', 'singleBusinessPermit', 'companyProfile'],
+                customer: ['businessPermit', 'certificateOfIncorporation', 'krapin'],
+                fundi: ['idFrontUrl', 'idBackUrl', 'certificateUrl', 'krapin'],
+                professional: ['idFrontUrl', 'idBackUrl', 'academicCertificateUrl', 'cvUrl', 'krapin', 'practiceLicense'],
+                contractor: ['businessRegistration', 'businessPermit', 'krapin', 'companyProfile'],
+                hardware: ['businessRegistration', 'krapin', 'singleBusinessPermit', 'companyProfile'],
             };
             return docMap[userType] || [];
         };
@@ -91,7 +91,7 @@ function ProfilePage() {
 
         if (up) {
             // Priority 1: Check the 'complete' flag from backend
-            if (up.complete === true) {
+            if (up.profileComplete === true) {
                 uploadsComplete = true;
             } else {
                 // Priority 2: Manual check of required documents
@@ -116,7 +116,7 @@ function ProfilePage() {
         }
 
         let experienceComplete = false;
-        if (up?.complete === true) {
+        if (up?.profileComplete === true) {
             experienceComplete = true;
         } else if (userType === 'fundi') {
             const hasGrade = !!up?.grade;
@@ -155,7 +155,7 @@ function ProfilePage() {
             'Products': 'incomplete',
             'Activities': 'complete',
         };
-    }, [user?.id, user?.accountType, user?.userType, user?.userProfile, providerData, rerender]);
+    }, [user?.id, user?.accountType, user?.userType, user?.profileComplete, providerData, rerender]);
 
     const progressPercentage = useMemo(() => {
         const relevantKeys = Object.keys(completionStatus).filter(key => key !== 'Activities');
@@ -224,7 +224,7 @@ function ProfilePage() {
                     <div className="w-[70%] sm:max-w-md mx-auto flex items-start gap-2 bg-yellow-100 rounded-md p-2 sm:p-4 shadow-md">
                         <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 mt-0.5 sm:mt-1 text-yellow-500 flex-shrink-0" />
                         <span className="text-xs sm:text-sm text-yellow-700 leading-tight sm:leading-snug">
-                            {(providerData?.userProfile?.complete || user?.userProfile?.complete)
+                            {(providerData?.profileComplete || user?.profileComplete)
                                 ? "Your profile is complete and awaiting admin approval."
                                 : "Please complete your profile for your account to be approved."
                             }

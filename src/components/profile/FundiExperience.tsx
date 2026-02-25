@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+//@ts-nocheck
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { XMarkIcon, EyeIcon } from "@heroicons/react/24/outline";

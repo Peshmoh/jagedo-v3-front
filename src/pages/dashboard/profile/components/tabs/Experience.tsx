@@ -329,13 +329,6 @@ const resolveSpecialization = (user: any) => {
   if (user.professionalSpecialization) return user.professionalSpecialization;
   if (user.contractorSpecialization) return user.contractorSpecialization;
 
-  // 3. Nested fallback (if any older data)
-  if (user?.specialization?.fundiLevel) return user.specialization.fundiLevel;
-  if (user?.specialization?.contractorLevel)
-    return user.specialization.contractorLevel;
-  if (user?.specialization?.professionalLevel)
-    return user.specialization.professionalLevel;
-
   return "";
 };
 
@@ -363,7 +356,7 @@ const Experience = ({ userData }) => {
 
   const getInitialAttachments = () => {
     // If no profile, return empty
-    if (!userData?.userProfile) {
+    if (!userData) {
       return [];
     }
 
@@ -371,55 +364,66 @@ const Experience = ({ userData }) => {
 
     switch (userType) {
       case "FUNDI":
-        projectData = userData?.userProfile?.previousJobPhotoUrls || [];
+        projectData = userData?.previousJobPhotoUrls || [];
         break;
       case "PROFESSIONAL":
-        projectData = userData?.userProfile?.professionalProjects || [];
+        projectData = userData?.professionalProjects || [];
         break;
       case "CONTRACTOR":
-        projectData = userData?.userProfile?.contractorProjects || [];
+        projectData = userData?.contractorProjects || [];
         break;
       case "HARDWARE":
-        projectData = userData?.userProfile?.hardwareProjects || [];
+        projectData = userData?.hardwareProjects || [];
         break;
       default:
-        projectData = userData?.userProfile?.previousJobPhotoUrls || [];
+        projectData = userData?.previousJobPhotoUrls || [];
     }
 
     if (!projectData || projectData.length === 0) {
       return [];
     }
 
-    return projectData.map((project, index) => ({
-      id: index + 1,
-      projectName: project.projectName || `${userType} Project ${index + 1}`,
-      files: [
-        {
-          name: `${project.projectName || `${userType} Project ${index + 1}`}.jpg`,
-          url: project.fileUrl || project?.projectFile,
-        },
-      ],
-    }));
+    return projectData.map((project, index) => {
+      const pName = project.projectName || `${userType} Project ${index + 1}`;
+      let pUrl = "";
+
+      if (typeof project.fileUrl === 'object' && project.fileUrl !== null) {
+        pUrl = project.fileUrl.url || "";
+      } else {
+        pUrl = project.fileUrl || project?.projectFile || "";
+      }
+
+      return {
+        id: index + 1,
+        projectName: pName,
+        files: [
+          {
+            name: `${pName}.jpg`,
+            url: pUrl,
+          },
+        ],
+      };
+    });
   };
 
   const profileUploaded = (userData) => {
     switch (userData?.userType) {
       case "FUNDI":
         return (
-          userData?.userProfile?.previousJobPhotoUrls &&
-          userData?.userProfile?.previousJobPhotoUrls.length > 0
+          userData?.previousJobPhotoUrls &&
+          userData?.previousJobPhotoUrls.length > 0
         );
       case "PROFESSIONAL":
         return userData?.userProfile?.specialization.professionalLevel;
       case "CONTRACTOR":
         return (
-          userData?.userProfile?.contractorProjects &&
-          userData?.userProfile?.contractorProjects.length > 0
+          userData?.contractorProjects &&
+          userData?.contractorProjects.length > 0
         );
       case "HARDWARE":
         return (
-          userData?.userProfile?.hardwareProjects &&
-          userData?.userProfile?.hardwareProjects.length > 0
+          userData?.hardwareProjects &&
+          userData?.hardwareProjects.length > 0
         );
       default:
         return false;
@@ -464,8 +468,8 @@ const Experience = ({ userData }) => {
   const [newProjects, setNewProjects] = useState<{ [key: string]: any }>({});
   // Initialize categories from userData or defaults
   const getInitialCategories = (): ContractorCategory[] => {
-    if (userData?.userProfile?.contractorCategories && Array.isArray(userData.userProfile.contractorCategories)) {
-      return userData.userProfile.contractorCategories.map((cat: any) => ({
+    if (userData?.contractorCategories && Array.isArray(userData.contractorCategories)) {
+      return userData.contractorCategories.map((cat: any) => ({
         category: cat.category || "",
         specialization: cat.specialization || "",
         class: cat.class || cat.categoryClass || "",
@@ -473,8 +477,8 @@ const Experience = ({ userData }) => {
       }));
     }
     // Fallback: try contractorExperiences if it's an array
-    if (userData?.userProfile?.contractorExperiences && Array.isArray(userData.userProfile.contractorExperiences)) {
-      return userData.userProfile.contractorExperiences.map((exp: any) => ({
+    if (userData?.contractorExperiences && Array.isArray(userData.contractorExperiences)) {
+      return userData.contractorExperiences.map((exp: any) => ({
         category: exp.category || "",
         specialization: exp.specialization || "",
         class: exp.categoryClass || exp.class || "",
@@ -501,74 +505,69 @@ const Experience = ({ userData }) => {
     setCategories(categories.filter((_, i) => i !== index));
   };
 
-  // Initialize info from userData.userProfile based on user type
+  // Initialize info from userData based on user type
   const getInitialInfo = () => {
-    if (!userData?.userProfile) {
+    if (!userData) {
       return getDefaultInfo();
     }
 
     switch (userType) {
       case "FUNDI":
-        const fundiSkill = userData.userProfile.skill || userData.skills || "";
+        const fundiSkill = userData.skill || userData.skills || "";
         const fundiSpecOptions = FUNDI_SPECIALIZATIONS[fundiSkill as keyof typeof FUNDI_SPECIALIZATIONS] || [];
         const defaultFundiSpec = fundiSpecOptions.length > 0 ? fundiSpecOptions[0] : "";
         return {
           skill: fundiSkill,
           specialization:
-            userData.userProfile.specialization ||
-            userData.userProfile.fundispecialization ||
             userData.specialization ||
+            userData.fundispecialization ||
             defaultFundiSpec,
-          grade: userData.userProfile.grade || "",
-          experience: userData.userProfile.experience || "",
+          grade: userData.grade || "",
+          experience: userData.experience || "",
         };
 
       case "PROFESSIONAL":
-        const profession = userData.userProfile.profession || userData.profession || "";
+        const profession = userData.profession || "";
         const profSpecOptions = PROFESSIONAL_SPECIALIZATIONS[profession as keyof typeof PROFESSIONAL_SPECIALIZATIONS] || [];
         const defaultProfSpec = profSpecOptions.length > 0 ? profSpecOptions[0] : "";
         return {
           profession: profession,
           specialization:
-            userData.userProfile.specialization ||
-            userData.userProfile.professionalSpecialization ||
             userData.specialization ||
+            userData.professionalSpecialization ||
             defaultProfSpec,
           professionalLevel:
-            userData.userProfile.professionalLevel || "",
+            userData.professionalLevel || "",
           yearsOfExperience:
-            userData.userProfile.yearsOfExperience || "",
+            userData.yearsOfExperience || "",
         };
 
       case "CONTRACTOR":
-        const category = userData.userProfile.contractorType || userData.contractorTypes || "";
+        const category = userData.contractorType || userData.contractorTypes || "";
         const contSpecOptions = CONTRACTOR_SPECIALIZATIONS[category as keyof typeof CONTRACTOR_SPECIALIZATIONS] || [];
         const defaultContSpec = contSpecOptions.length > 0 ? contSpecOptions[0] : "";
         return {
           category: category,
           specialization:
-            userData.userProfile.specialization ||
-            userData.userProfile.contractorSpecialization ||
             userData.specialization ||
+            userData.contractorSpecialization ||
             defaultContSpec,
-          class: userData.userProfile.licenseLevel || "",
+          class: userData.licenseLevel || "",
           yearsOfExperience:
-            userData.userProfile.contractorExperiences?.[0]?.yearsOfExperience ||
-            userData?.contractorExperiences?.[0]?.yearsOfExperience ||
+            userData.contractorExperiences?.[0]?.yearsOfExperience ||
             "",
 
         };
 
       case "HARDWARE":
-        const hardwareType = userData.userProfile.hardwareType || userData.hardwareTypes || "";
+        const hardwareType = userData.hardwareType || userData.hardwareTypes || "";
         return {
           hardwareType: hardwareType,
           specialization:
-            userData.userProfile.specialization ||
             userData.specialization ||
             "Cement & Concrete Products",
-          businessType: userData.userProfile.businessType || "",
-          experience: userData.userProfile.experience || "",
+          businessType: userData.businessType || "",
+          experience: userData.experience || "",
         };
 
       default:
@@ -1367,7 +1366,7 @@ const Experience = ({ userData }) => {
               {userData?.userType} Experience
             </h1>
             <div className="flex items-center gap-3">
-              {( userData?.adminApproved) ? (
+              {(userData?.adminApproved) ? (
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-800 border border-green-200">
                   <FiCheck className="w-4 h-4" />
                   Experience Approved
