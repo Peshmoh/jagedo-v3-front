@@ -110,7 +110,7 @@ const ContractorExperience = ({ data, refreshData }: any) => {
           yearsOfExperience: exp.yearsOfExperience || exp.years || "",
           certificate: exp.certificate || "",
           license: exp.license || "",
-        })));
+        }));
       } else if (contractorTypes) {
         const slugs = contractorTypes.split(',').map((s: string) => s.trim());
         const prePopulated = slugs
