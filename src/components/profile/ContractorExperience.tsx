@@ -102,7 +102,7 @@ const ContractorExperience = ({ data, refreshData }: any) => {
       const contractorTypes = up.contractorTypes || ""; // comma separated slugs
 
       if (exps.length > 0) {
-        mappedCategories = exps.map((exp: any) => ({
+        const mappedCategories = exps.map((exp: any) => ({
           id: exp.id || crypto.randomUUID(),
           category: exp.category || "",
           specialization: exp.specialization || "",
@@ -111,6 +111,7 @@ const ContractorExperience = ({ data, refreshData }: any) => {
           certificate: exp.certificate || "",
           license: exp.license || "",
         }));
+        setCategories(mappedCategories);
       } else if (contractorTypes) {
         const slugs = contractorTypes.split(',').map((s: string) => s.trim());
         const prePopulated = slugs
