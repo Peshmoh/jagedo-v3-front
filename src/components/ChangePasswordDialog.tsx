@@ -45,6 +45,8 @@ export const ChangePasswordDialog = ({
       newErrors.newPassword = "New password is required";
     } else if (newPassword.length < 8) {
       newErrors.newPassword = "Password must be at least 8 characters";
+    } else if (!/\d/.test(newPassword)) {
+      newErrors.newPassword = "Password must include at least one number";
     }
 
     if (!confirmPassword.trim()) {

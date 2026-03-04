@@ -39,6 +39,9 @@ const ResetPassword = () => {
         if (newPassword.trim().length < 8) {
             return toast.error("Password must be at least 8 characters long.");
         }
+        if (!/\d/.test(newPassword.trim())) {
+            return toast.error("Password must include at least one number.");
+        }
         if (newPassword.trim() !== confirmPassword.trim()) {
             return toast.error("Passwords do not match. Please try again.");
         }

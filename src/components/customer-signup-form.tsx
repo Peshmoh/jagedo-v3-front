@@ -164,6 +164,8 @@ export function CustomerSignupForm({
           newErrors.password = "Password is required"
         } else if (formData.password.length < 8) {
           newErrors.password = "Password must be at least 8 characters"
+        } else if (!/\d/.test(formData.password)) {
+          newErrors.password = "Password must include at least one number"
         }
         if (!formData.confirmPassword) {
           newErrors.confirmPassword = "Please confirm your password"
@@ -717,6 +719,9 @@ export function CustomerSignupForm({
                 </p>
                 <p className={`text-sm flex items-center gap-2 transition-colors ${formData.password && /[a-z]/.test(formData.password) ? 'text-green-600' : 'text-red-500'}`}>
                   {formData.password && /[a-z]/.test(formData.password) ? <Check className="h-4 w-4 flex-shrink-0" /> : <span className="h-4 w-4 flex-shrink-0 text-center">&#x2022;</span>} One lowercase letter
+                </p>
+                <p className={`text-sm flex items-center gap-2 transition-colors ${formData.password && /\d/.test(formData.password) ? 'text-green-600' : 'text-red-500'}`}>
+                  {formData.password && /\d/.test(formData.password) ? <Check className="h-4 w-4 flex-shrink-0" /> : <span className="h-4 w-4 flex-shrink-0 text-center">&#x2022;</span>} One numeric character
                 </p>
                 <p className={`text-sm flex items-center gap-2 transition-colors ${formData.password && /[^A-Za-z0-9]/.test(formData.password) ? 'text-green-600' : 'text-red-500'}`}>
                   {formData.password && /[^A-Za-z0-9]/.test(formData.password) ? <Check className="h-4 w-4 flex-shrink-0" /> : <span className="h-4 w-4 flex-shrink-0 text-center">&#x2022;</span>} One special character
