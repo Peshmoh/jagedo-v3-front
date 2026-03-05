@@ -41,9 +41,9 @@ export const createProductAdmin = async (axiosInstance: any, productData: any): 
 };
 
 // GET /api/products/seller
-export const getProductsBySeller = async (axiosInstance: any): Promise<any> => {
+export const getProductsBySeller = async (axiosInstance: any, sellerId: any): Promise<any> => {
     try {
-        const response = await axiosInstance.get(`${API_BASE_URL}/seller`, {
+        const response = await axiosInstance.get(`${API_BASE_URL}/seller/${sellerId}`, {
             headers: {
                 Authorization: getAuthHeaders()
             }
