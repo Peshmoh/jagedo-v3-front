@@ -62,12 +62,33 @@ const FundiExperience = ({ data, refreshData }: any) => {
   useEffect(() => {
     if (data) {
       const up = data;
-      setGrade(up.grade || "G1: Master Fundi");
-      setExperience(up.experience || "10+ years");
-      setSpecialization(up.specialization || "");
+      const profile = up.userProfile || {};
+      const rawSkill =
+        up.skill || up.skills || profile.skill || profile.skills || "Plumber";
+      const resolvedSkill = String(rawSkill)
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+      const resolvedSpecialization =
+        up.specialization ||
+        up.fundispecialization ||
+        up.fundiSpecialization ||
+        profile.specialization ||
+        profile.fundispecialization ||
+        profile.fundiSpecialization ||
+        "";
+
+      setSkill(resolvedSkill);
+      setGrade(up.grade || profile.grade || "G1: Master Fundi");
+      setExperience(up.experience || profile.experience || "10+ years");
+      setSpecialization(resolvedSpecialization);
 
       // Fundi projects are in previousJobPhotoUrls, Professional/Contractor usually in professionalProjects
-      const projectSource = up.previousJobPhotoUrls || up.professionalProjects || [];
+      const projectSource =
+        up.previousJobPhotoUrls ||
+        profile.previousJobPhotoUrls ||
+        up.professionalProjects ||
+        profile.professionalProjects ||
+        [];
 
       if (projectSource.length > 0) {
         // If it's previousJobPhotoUrls, it might be a list of { projectName, fileUrl: { url } }
@@ -178,7 +199,15 @@ const FundiExperience = ({ data, refreshData }: any) => {
       // 2. Build Payload
       const payload = {
         skill: skill,
-        specialization: specialization,
+        specialization:
+          specialization ||
+          data?.specialization ||
+          data?.fundispecialization ||
+          data?.fundiSpecialization ||
+          data?.userProfile?.specialization ||
+          data?.userProfile?.fundispecialization ||
+          data?.userProfile?.fundiSpecialization ||
+          "",
         grade: grade,
         experience: experience,
         previousJobPhotoUrls: flattenedProjectFiles
@@ -201,6 +230,7 @@ const FundiExperience = ({ data, refreshData }: any) => {
   if (isLoadingProfile && !data) return <div className="p-8 text-center text-gray-500 font-medium">Loading...</div>;
 
   const inputStyles = "w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm";
+  const specializationOptions = specialization ? [specialization] : fundiSpecializations.slice(0, 0);
 
   return (
     <div className="bg-gray-50 min-h-screen w-full p-4 md:p-8">
@@ -242,7 +272,7 @@ const FundiExperience = ({ data, refreshData }: any) => {
                   className={inputStyles}
                 >
                   <option value="">Select</option>
-                  {fundiSpecializations.map(spec => (
+                  {specializationOptions.map(spec => (
                     <option key={spec}>{spec}</option>
                   ))}
                 </select>
