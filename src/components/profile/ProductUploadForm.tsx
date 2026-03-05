@@ -1,5 +1,5 @@
 //@ts-ignore
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -58,23 +58,47 @@ const ProductUploadForm = ({ onCancel }) => {
     const isEditMode = queryParams.get('edit') === 'true';
     const productId = queryParams.get('id');
     const origin = location.state?.from || "/fundi-portal/products";
-    const isFormIncomplete = !formData.name || !formData.bid || !formData.sku || !formData.price || !formData.category || !formData.region || !productDesc || images.length === 0;
+
+    const isFormIncomplete = useMemo(() => {
+        const requiredFields = [
+            formData.name,
+            formData.bid,
+            formData.sku,
+            formData.price,
+            formData.category,
+            formData.region,
+            productDesc
+        ];
+
+        const hasEmptyFields = requiredFields.some(field =>
+            !field || field.toString().trim() === ''
+        );
+
+        const hasNoImages = images.length === 0;
+
+        return hasEmptyFields || hasNoImages;
+    }, [formData, productDesc, images]);
 
 
     useEffect(() => {
         const fetchDropdownData = async () => {
+            if (!user?.userType) return;
+
             setIsDropdownLoading(true);
             try {
-                // Fetch both in parallel for efficiency
                 const [categoriesResponse, regionsResponse] = await Promise.all([
                     getProductCategories(axiosInstance),
                     getAllRegions(axiosInstance)
                 ]);
 
-                const categoriesRes = categoriesResponse.hashSet.filter((cat: any) => cat.type === user.userType.toLowerCase())
-                // Based on the provided structures
+                const categoriesRes = (categoriesResponse.data || []).filter(
+                    (cat) => cat.type?.toLowerCase() === user.userType.toLowerCase()
+                );
+                const regionsRes = (regionsResponse.hashSet || []).filter(
+                    (reg) => reg.type?.toLowerCase() === user.userType.toLowerCase()
+                );
                 setCategories(categoriesRes || []);
-                setRegions(regionsResponse.hashSet || []);
+                setRegions(regionsRes || []);
 
             } catch (error) {
                 toast.error("Failed to load categories or regions.");
@@ -85,33 +109,36 @@ const ProductUploadForm = ({ onCancel }) => {
         };
 
         fetchDropdownData();
-    }, []);
+    }, [user?.userType]);
 
-    // Effect to fetch product data if in edit mode
     useEffect(() => {
         const fetchProduct = async () => {
             if (isEditMode && productId) {
                 setIsPageLoading(true);
                 try {
-                    const existingProduct = await getProductById(axiosInstance, productId);
-                    setFormData({
-                        name: existingProduct.name || '',
-                        material: existingProduct.material || '',
-                        size: existingProduct.size || '',
-                        color: existingProduct.color || '',
-                        region: existingProduct.regionId?.toString() || '',
-                        uom: existingProduct.uom || '',
-                        bid: existingProduct.bId || '',
-                        sku: existingProduct.sku || '',
-                        price: existingProduct.customPrice?.toString() || '',
-                        category: existingProduct.category || '',
-                    });
-                    setProductDesc(existingProduct.description || '');
-                    setImages(existingProduct.images || []);
-                    setIsEditing(true);
+                    const response = await getProductById(axiosInstance, productId);
+                    const existingProduct = response.data;
+
+                    if (existingProduct) {
+                        setFormData({
+                            name: existingProduct.name || '',
+                            material: existingProduct.material || '',
+                            size: existingProduct.size || '',
+                            color: existingProduct.color || '',
+                            region: (existingProduct.regionId || existingProduct.region_id || '').toString(),
+                            uom: existingProduct.uom || '',
+                            bid: (existingProduct.bId || existingProduct.bid || '').toString(),
+                            sku: (existingProduct.sku || '').toString(),
+                            price: (existingProduct.customPrice || existingProduct.basePrice || '').toString(),
+                            category: existingProduct.category || '',
+                        });
+                        setProductDesc(existingProduct.description || '');
+                        setImages(existingProduct.images || []);
+                        setIsEditing(true);
+                    }
                 } catch (error) {
                     toast.error("Failed to fetch product data. Redirecting.");
-                    navigate(origin);
+                    navigate(-1);
                 } finally {
                     setIsPageLoading(false);
                 }
@@ -137,9 +164,8 @@ const ProductUploadForm = ({ onCancel }) => {
         };
 
         fetchProduct();
-    }, []);
+    }, [isEditMode, productId]);
 
-    // --- HANDLER FUNCTIONS ---
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -150,7 +176,6 @@ const ProductUploadForm = ({ onCancel }) => {
     };
 
     const handleApiSubmit = async (statusType) => {
-        // --- DRAFT HANDLING LOGIC ---
         if (statusType === "Drafts") {
             if (!formData.name) {
                 toast.error("Please enter at least a product name to save a draft.");
@@ -167,8 +192,6 @@ const ProductUploadForm = ({ onCancel }) => {
                 localStorage.setItem('product_draft', JSON.stringify(draft));
                 toast.success('Product saved as a draft!');
 
-                setTimeout(() => navigate(origin), 1500);
-
             } catch (error) {
                 toast.error("Failed to save draft.");
                 console.error("Draft save error:", error);
@@ -178,10 +201,41 @@ const ProductUploadForm = ({ onCancel }) => {
             return;
         }
 
-        if (isFormIncomplete) {
-            toast.error('Please fill all required fields.');
-            return;
+        if (statusType !== "Drafts") {
+            if (!formData.category) {
+                toast.error("Please select a Category.");
+                return;
+            }
+            if (!formData.name?.trim()) {
+                toast.error("Please enter a Product Name.");
+                return;
+            }
+            if (!productDesc?.trim()) {
+                toast.error("Please enter a Product Description.");
+                return;
+            }
+            if (!formData.region) {
+                toast.error("Please select a Region.");
+                return;
+            }
+            if (!formData.bid?.toString().trim()) {
+                toast.error("Please enter a B-ID.");
+                return;
+            }
+            if (!formData.sku?.toString().trim()) {
+                toast.error("Please enter a SKU.");
+                return;
+            }
+            if (!formData.price?.toString().trim()) {
+                toast.error("Please enter a Price.");
+                return;
+            }
+            if (images.length === 0) {
+                toast.error("Please upload at least one image.");
+                return;
+            }
         }
+
         setIsSubmitting(true);
 
         try {
@@ -212,7 +266,8 @@ const ProductUploadForm = ({ onCancel }) => {
                 color: formData.color,
                 uom: formData.uom,
                 images: finalImageUrls,
-                customPrice: parseFloat(formData.price) || 0
+                customPrice: parseFloat(formData.price) || 0,
+                regionId: formData.region
             };
 
             if (isEditing) {
@@ -224,6 +279,7 @@ const ProductUploadForm = ({ onCancel }) => {
             }
 
             localStorage.removeItem('product_draft');
+            navigate(-1);
 
         } catch (error) {
             toast.error(error.message || "An unexpected error occurred during submission.");
@@ -285,7 +341,7 @@ const ProductUploadForm = ({ onCancel }) => {
                                 { name: 'material', label: 'Material' },
                                 { name: 'size', label: 'Size' },
                                 { name: 'color', label: 'Color' },
-                                { name: 'uom', label: 'UOM' },
+                                { name: 'uom', label: 'Unit of Measurement*', required: true },
                                 { name: 'price', label: 'Price (KES)*', type: 'number', required: true },
                             ].map(({ name, label, type = 'text' }) => (
                                 <div key={name} className="relative">
@@ -296,7 +352,7 @@ const ProductUploadForm = ({ onCancel }) => {
                                                 id="uom"
                                                 value={formData.uom}
                                                 onChange={handleInputChange}
-                                                className="peer w-full border border-gray-300 rounded-lg px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none cursor-pointer transition-all duration-200 hover:border-gray-400 text-gray-900"
+                                                className="peer w-full border border-gray-300 rounded-lg px-4 pt-3.5 pb-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white appearance-none cursor-pointer transition-all duration-200 hover:border-gray-400 text-gray-900"
                                             >
                                                 <option value="" disabled>Select unit</option>
                                                 <option value="Pieces">Pieces</option>
@@ -307,18 +363,6 @@ const ProductUploadForm = ({ onCancel }) => {
                                                 <option value="Pair">Pair</option>
                                             </select>
 
-                                            {/* Floating label - matches your input field style */}
-                                            <label
-                                                htmlFor="uom"
-                                                className={`absolute left-3 transition-all duration-200 bg-white px-1 pointer-events-none ${formData.uom
-                                                    ? '-top-2.5 text-sm text-blue-600'
-                                                    : 'top-3.5 text-base text-gray-500'
-                                                    }`}
-                                            >
-                                                {label}
-                                            </label>
-
-                                            {/* Custom dropdown arrow */}
                                             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                                                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -365,7 +409,7 @@ const ProductUploadForm = ({ onCancel }) => {
                         <button type="button" disabled={isSubmitting} onClick={() => handleApiSubmit("Drafts")} className="w-full sm:w-auto px-6 py-2 rounded-lg font-semibold text-white bg-blue-800 hover:bg-blue-900 cursor-pointer disabled:bg-blue-400 disabled:cursor-not-allowed">
                             {isSubmitting ? 'Saving...' : 'Save as Draft'}
                         </button>
-                        <button type="button" disabled={isFormIncomplete || isSubmitting} onClick={() => handleApiSubmit("Pending Approval")} className="w-full sm:w-auto px-6 py-2 font-semibold text-white rounded-lg bg-green-600 hover:bg-green-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        <button type="button" disabled={isSubmitting} onClick={() => handleApiSubmit("Pending Approval")} className="w-full sm:w-auto px-6 py-2 font-semibold text-white rounded-lg bg-green-600 hover:bg-green-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed">
                             {isSubmitting ? 'Submitting...' : submitLabel}
                         </button>
                     </div>
